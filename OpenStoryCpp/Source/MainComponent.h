@@ -29,6 +29,7 @@ public:
 
 private:
     TextButton btIdeas;
+    TabbedComponent m_TopTab;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

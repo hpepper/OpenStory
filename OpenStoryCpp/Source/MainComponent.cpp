@@ -7,18 +7,21 @@
 */
 
 #include "MainComponent.h"
+#include "IdeaComponent.h"
 
 
 //==============================================================================
 MainContentComponent::MainContentComponent()
+: m_TopTab(TabbedButtonBar::TabsAtTop)
 {
+    m_TopTab.addTab("Ideas", Colour(0,0,0), new IdeaComponent(),  true);
+    addAndMakeVisible(m_TopTab);
     btIdeas.setButtonText("Ideas");
-    addAndMakeVisible(btIdeas);
+    //addAndMakeVisible(btIdeas);
     setSize (500, 400);
 }
 
 MainContentComponent::~MainContentComponent()
-
 {
 }
 
@@ -38,5 +41,6 @@ void MainContentComponent::resized()
     // update their positions.
 //    btIdeas.setBoundsRelative (0.05, 0.05, 0.90, 0.25);
   //btIdeas.changeWidthToFitText(10);
-    btIdeas.setBounds (10,10,50,20);
+    //btIdeas.setBounds (10,10,50,20);
+    m_TopTab.setBounds (getLocalBounds().reduced (4));
 }

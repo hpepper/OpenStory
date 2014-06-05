@@ -5,6 +5,9 @@
               jucerVersion="3.1.0">
   <MAINGROUP id="Sm9hmy" name="OpenStory">
     <GROUP id="{DF0F6BFC-9549-C265-F9DA-917FE00CEB9E}" name="Source">
+      <FILE id="EUZdDZ" name="IdeaComponent.cpp" compile="1" resource="0"
+            file="Source/IdeaComponent.cpp"/>
+      <FILE id="FdY4Cu" name="IdeaComponent.h" compile="0" resource="0" file="Source/IdeaComponent.h"/>
       <FILE id="JLzF8W" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="uWitdn" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
