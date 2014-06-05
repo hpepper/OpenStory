@@ -232,6 +232,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\IdeaComponent.cpp">
+      <Filter>OpenStory\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>OpenStory\Source</Filter>
     </ClCompile>
@@ -1194,6 +1197,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\IdeaComponent.h">
+      <Filter>OpenStory\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">
       <Filter>OpenStory\Source</Filter>
     </ClInclude>

@@ -51,6 +51,7 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS := \
+  $(OBJDIR)/IdeaComponent_295cf027.o \
   $(OBJDIR)/MainComponent_a6ffb4a5.o \
   $(OBJDIR)/Main_90ebc5c2.o \
   $(OBJDIR)/juce_core_aff681cc.o \
@@ -79,6 +80,11 @@ clean:
 strip:
 	@echo Stripping OpenStory
 	-@strip --strip-unneeded $(OUTDIR)/$(TARGET)
+
+$(OBJDIR)/IdeaComponent_295cf027.o: ../../Source/IdeaComponent.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling IdeaComponent.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/MainComponent_a6ffb4a5.o: ../../Source/MainComponent.cpp
 	-@mkdir -p $(OBJDIR)
