@@ -1,33 +1,33 @@
 /*
   ==============================================================================
 
-    IdeaComponent.h
-    Created: 5 Jun 2014 8:42:19pm
+    IdeaListComponent.h
+    Created: 6 Jun 2014 8:59:30pm
     Author:  Henrik Koch
 
   ==============================================================================
 */
 
-#ifndef IDEACOMPONENT_H_INCLUDED
-#define IDEACOMPONENT_H_INCLUDED
+#ifndef IDEALISTCOMPONENT_H_INCLUDED
+#define IDEALISTCOMPONENT_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
 //==============================================================================
 /*
 */
-class IdeaComponent    : public Component
+class IdeaListComponent    : public Component
 {
 public:
-    IdeaComponent();
-    ~IdeaComponent();
+    IdeaListComponent();
+    ~IdeaListComponent();
 
+    void paint (Graphics&);
     void resized();
 
 private:
-    TabbedComponent m_LocalTab;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IdeaComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IdeaListComponent)
 };
 
 
-#endif  // IDEACOMPONENT_H_INCLUDED
+#endif  // IDEALISTCOMPONENT_H_INCLUDED

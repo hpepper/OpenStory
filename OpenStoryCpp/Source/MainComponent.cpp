@@ -8,6 +8,7 @@
 
 #include "MainComponent.h"
 #include "IdeaComponent.h"
+#include "StoryComponent.h"
 
 
 //==============================================================================
@@ -15,6 +16,7 @@ MainContentComponent::MainContentComponent()
 : m_TopTab(TabbedButtonBar::TabsAtTop)
 {
     m_TopTab.addTab("Ideas", Colour(0,0,0), new IdeaComponent(),  true);
+    m_TopTab.addTab("Story", Colour(0,0,0), new StoryComponent(),  true);
     addAndMakeVisible(m_TopTab);
     btIdeas.setButtonText("Ideas");
     //addAndMakeVisible(btIdeas);

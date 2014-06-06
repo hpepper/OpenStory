@@ -232,6 +232,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\IdeaNewComponent.cpp">
+      <Filter>OpenStory\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\IdeaListComponent.cpp">
+      <Filter>OpenStory\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\StoryComponent.cpp">
+      <Filter>OpenStory\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\IdeaComponent.cpp">
       <Filter>OpenStory\Source</Filter>
     </ClCompile>
@@ -1197,6 +1206,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\IdeaNewComponent.h">
+      <Filter>OpenStory\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\IdeaListComponent.h">
+      <Filter>OpenStory\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StoryComponent.h">
+      <Filter>OpenStory\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\IdeaComponent.h">
       <Filter>OpenStory\Source</Filter>
     </ClInclude>

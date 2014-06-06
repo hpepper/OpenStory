@@ -51,6 +51,9 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS := \
+  $(OBJDIR)/IdeaNewComponent_a3b5c5d.o \
+  $(OBJDIR)/IdeaListComponent_953f5da9.o \
+  $(OBJDIR)/StoryComponent_c5b48f11.o \
   $(OBJDIR)/IdeaComponent_295cf027.o \
   $(OBJDIR)/MainComponent_a6ffb4a5.o \
   $(OBJDIR)/Main_90ebc5c2.o \
@@ -80,6 +83,21 @@ clean:
 strip:
 	@echo Stripping OpenStory
 	-@strip --strip-unneeded $(OUTDIR)/$(TARGET)
+
+$(OBJDIR)/IdeaNewComponent_a3b5c5d.o: ../../Source/IdeaNewComponent.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling IdeaNewComponent.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/IdeaListComponent_953f5da9.o: ../../Source/IdeaListComponent.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling IdeaListComponent.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/StoryComponent_c5b48f11.o: ../../Source/StoryComponent.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling StoryComponent.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/IdeaComponent_295cf027.o: ../../Source/IdeaComponent.cpp
 	-@mkdir -p $(OBJDIR)

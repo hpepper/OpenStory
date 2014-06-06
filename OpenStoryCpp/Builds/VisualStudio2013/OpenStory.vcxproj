@@ -131,6 +131,9 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\IdeaNewComponent.cpp"/>
+    <ClCompile Include="..\..\Source\IdeaListComponent.cpp"/>
+    <ClCompile Include="..\..\Source\StoryComponent.cpp"/>
     <ClCompile Include="..\..\Source\IdeaComponent.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
@@ -1006,6 +1009,9 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_video\juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\IdeaNewComponent.h"/>
+    <ClInclude Include="..\..\Source\IdeaListComponent.h"/>
+    <ClInclude Include="..\..\Source\StoryComponent.h"/>
     <ClInclude Include="..\..\Source\IdeaComponent.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\text\juce_CharacterFunctions.h"/>
