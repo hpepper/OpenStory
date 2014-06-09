@@ -58,5 +58,6 @@ void IdeaNewComponent::resized()
     //m_pHeadDescription->setBounds (getLocalBounds().reduced (4));
     int nTextHeight = int( m_fCurrentFontHeight * 1.1 ) + 3;
     m_pHeadLine->setBounds(0,0, getWidth(), nTextHeight);
-    m_pHeadDescription->setBounds(0, m_pHeadLine->getBottom(), getWidth(), 80);
+    int nHeightLeftEmpty = getHeight() - m_pHeadLine->getBottom();
+    m_pHeadDescription->setBounds(0, m_pHeadLine->getBottom(), getWidth(), nHeightLeftEmpty);
 }
