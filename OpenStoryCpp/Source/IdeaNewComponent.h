@@ -26,6 +26,7 @@ public:
 
 private:
     TextPropertyComponent *m_pHeadLine;
+    ChoicePropertyComponent *m_pIdeaType;
     TextPropertyComponent *m_pHeadDescription;
     
     float m_fCurrentFontHeight;
