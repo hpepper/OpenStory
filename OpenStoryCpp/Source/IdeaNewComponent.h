@@ -3,7 +3,6 @@
 
     IdeaNewComponent.h
     Created: 6 Jun 2014 9:00:26pm
-    Author:  Henrik Koch
 
   ==============================================================================
 */
@@ -26,6 +25,8 @@ public:
     void resized();
 
 private:
+    TextPropertyComponent *m_pHeadLine;
+    TextPropertyComponent *m_pHeadDescription;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IdeaNewComponent)
 };
 

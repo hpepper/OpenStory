@@ -8,6 +8,7 @@ include $(CLEAR_VARS)
 LOCAL_ARM_MODE := arm
 LOCAL_MODULE := juce_jni
 LOCAL_SRC_FILES := \
+  ../../../Source/SagaComponent.cpp\
   ../../../Source/IdeaNewComponent.cpp\
   ../../../Source/IdeaListComponent.cpp\
   ../../../Source/StoryComponent.cpp\

@@ -5,6 +5,9 @@
               jucerVersion="3.1.0">
   <MAINGROUP id="Sm9hmy" name="OpenStory">
     <GROUP id="{DF0F6BFC-9549-C265-F9DA-917FE00CEB9E}" name="Source">
+      <FILE id="aOpDMV" name="SagaComponent.cpp" compile="1" resource="0"
+            file="Source/SagaComponent.cpp"/>
+      <FILE id="ASMJnH" name="SagaComponent.h" compile="0" resource="0" file="Source/SagaComponent.h"/>
       <FILE id="m8BNC9" name="IdeaNewComponent.cpp" compile="1" resource="0"
             file="Source/IdeaNewComponent.cpp"/>
       <FILE id="C5Sm4M" name="IdeaNewComponent.h" compile="0" resource="0"

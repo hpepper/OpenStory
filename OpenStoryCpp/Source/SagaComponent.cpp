@@ -1,28 +1,28 @@
 /*
   ==============================================================================
 
-    IdeaListComponent.cpp
-    Created: 6 Jun 2014 8:59:30pm
+    SagaComponent.cpp
+    Created: 9 Jun 2014 12:11:44am
 
   ==============================================================================
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "IdeaListComponent.h"
+#include "SagaComponent.h"
 
 //==============================================================================
-IdeaListComponent::IdeaListComponent()
+SagaComponent::SagaComponent()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
 
 }
 
-IdeaListComponent::~IdeaListComponent()
+SagaComponent::~SagaComponent()
 {
 }
 
-void IdeaListComponent::paint (Graphics& g)
+void SagaComponent::paint (Graphics& g)
 {
     /* This demo code just fills the component's background and
        draws some placeholder text to get you started.
@@ -38,11 +38,11 @@ void IdeaListComponent::paint (Graphics& g)
 
     g.setColour (Colours::lightblue);
     g.setFont (14.0f);
-    g.drawText ("IdeaListComponent", getLocalBounds(),
+    g.drawText ("SagaComponent", getLocalBounds(),
                 Justification::centred, true);   // draw some placeholder text
 }
 
-void IdeaListComponent::resized()
+void SagaComponent::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..

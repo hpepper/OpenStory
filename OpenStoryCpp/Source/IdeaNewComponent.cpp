@@ -2,8 +2,7 @@
   ==============================================================================
 
     IdeaNewComponent.cpp
-    Created: 6 Jun 2014 9:00:26pm
-    Author:  Henrik Koch
+    Created: 6 Jun 2014 9:00:26p
 
   ==============================================================================
 */
@@ -14,13 +13,18 @@
 //==============================================================================
 IdeaNewComponent::IdeaNewComponent()
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
+    m_pHeadLine = new TextPropertyComponent (Value ("This is a single-line Text Property"), "Headline", 200, false);
+    m_pHeadDescription = new TextPropertyComponent (Value ("Multiline entrys."), "Description", 2000, true);
+    
+    addAndMakeVisible( m_pHeadLine );
+    addAndMakeVisible( m_pHeadDescription );
 
 }
 
 IdeaNewComponent::~IdeaNewComponent()
 {
+    delete m_pHeadLine;
+    delete m_pHeadDescription;
 }
 
 void IdeaNewComponent::paint (Graphics& g)
@@ -39,13 +43,14 @@ void IdeaNewComponent::paint (Graphics& g)
 
     g.setColour (Colours::lightblue);
     g.setFont (14.0f);
-    g.drawText ("IdeaNewComponent", getLocalBounds(),
-                Justification::centred, true);   // draw some placeholder text
 }
 
 void IdeaNewComponent::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
-
+    //m_pHeadLine->setBounds (getLocalBounds().reduced (4));
+    //m_pHeadDescription->setBounds (getLocalBounds().reduced (4));
+    m_pHeadLine->setBounds(0,0, getWidth(), 20);
+    m_pHeadDescription->setBounds(0,20, getWidth(), 20);
 }

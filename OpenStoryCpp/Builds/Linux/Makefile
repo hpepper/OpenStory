@@ -51,6 +51,7 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS := \
+  $(OBJDIR)/SagaComponent_5f00d716.o \
   $(OBJDIR)/IdeaNewComponent_a3b5c5d.o \
   $(OBJDIR)/IdeaListComponent_953f5da9.o \
   $(OBJDIR)/StoryComponent_c5b48f11.o \
@@ -83,6 +84,11 @@ clean:
 strip:
 	@echo Stripping OpenStory
 	-@strip --strip-unneeded $(OUTDIR)/$(TARGET)
+
+$(OBJDIR)/SagaComponent_5f00d716.o: ../../Source/SagaComponent.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling SagaComponent.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/IdeaNewComponent_a3b5c5d.o: ../../Source/IdeaNewComponent.cpp
 	-@mkdir -p $(OBJDIR)

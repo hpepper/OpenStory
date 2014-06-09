@@ -9,14 +9,16 @@
 #include "MainComponent.h"
 #include "IdeaComponent.h"
 #include "StoryComponent.h"
+#include "SagaComponent.h"
 
 
 //==============================================================================
 MainContentComponent::MainContentComponent()
 : m_TopTab(TabbedButtonBar::TabsAtTop)
 {
-    m_TopTab.addTab("Ideas", Colour(0,0,0), new IdeaComponent(),  true);
-    m_TopTab.addTab("Story", Colour(0,0,0), new StoryComponent(),  true);
+    m_TopTab.addTab("Ideas", Colour(0,0,250), new IdeaComponent(),  true);
+    m_TopTab.addTab("Saga", Colour(0,200,0), new SagaComponent(),  true);
+    m_TopTab.addTab("Story", Colour(0,150,0), new StoryComponent(),  true);
     addAndMakeVisible(m_TopTab);
     btIdeas.setButtonText("Ideas");
     //addAndMakeVisible(btIdeas);

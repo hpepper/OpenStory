@@ -232,6 +232,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\SagaComponent.cpp">
+      <Filter>OpenStory\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\IdeaNewComponent.cpp">
       <Filter>OpenStory\Source</Filter>
     </ClCompile>
@@ -1206,6 +1209,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\SagaComponent.h">
+      <Filter>OpenStory\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\IdeaNewComponent.h">
       <Filter>OpenStory\Source</Filter>
     </ClInclude>
