@@ -42,9 +42,13 @@ IdeaNewComponent::IdeaNewComponent()
     m_pIdeaType = new ChoicePropertyComponent (Value (Random::getSystemRandom().nextInt (7)), "Idea type", choices, choiceVars);
     m_pHeadDescription = new TextPropertyComponent (Value ("Multiline entrys."), "Description", 2000, true);
     
+    m_pButtonCommit = new TextButton ("Commit");
+
     addAndMakeVisible( m_pHeadLine );
     addAndMakeVisible( m_pIdeaType );
     addAndMakeVisible( m_pHeadDescription );
+    
+    addAndMakeVisible( m_pButtonCommit );
 
     m_fCurrentFontHeight = 14.0f;
 }
@@ -54,6 +58,7 @@ IdeaNewComponent::~IdeaNewComponent()
     delete m_pHeadLine;
     delete m_pHeadDescription;
     delete m_pIdeaType;
+    delete m_pButtonCommit;
 }
 
 void IdeaNewComponent::paint (Graphics& g)
@@ -88,5 +93,7 @@ void IdeaNewComponent::resized()
     m_pHeadLine->setBounds(0,0, getWidth(), nTextHeight);
     m_pIdeaType->setBounds(0, m_pHeadLine->getBottom(), getWidth(), nTextHeight);
     int nHeightLeftEmpty = getHeight() - m_pIdeaType->getBottom();
-    m_pHeadDescription->setBounds(0, m_pIdeaType->getBottom(), getWidth(), nHeightLeftEmpty);
+    m_pHeadDescription->setBounds(0, m_pIdeaType->getBottom(), getWidth(), nHeightLeftEmpty-nTextHeight);
+    
+    m_pButtonCommit->setBounds(0,m_pHeadDescription->getBottom(), getWidth(), nTextHeight);
 }

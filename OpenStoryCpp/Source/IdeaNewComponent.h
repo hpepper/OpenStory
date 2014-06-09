@@ -29,6 +29,9 @@ private:
     ChoicePropertyComponent *m_pIdeaType;
     TextPropertyComponent *m_pHeadDescription;
     
+    TextButton* m_pButtonCommit;
+
+    
     float m_fCurrentFontHeight;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IdeaNewComponent)
 };
