@@ -19,6 +19,7 @@ IdeaNewComponent::IdeaNewComponent()
     addAndMakeVisible( m_pHeadLine );
     addAndMakeVisible( m_pHeadDescription );
 
+    m_fCurrentFontHeight = 14.0f;
 }
 
 IdeaNewComponent::~IdeaNewComponent()
@@ -43,6 +44,10 @@ void IdeaNewComponent::paint (Graphics& g)
 
     g.setColour (Colours::lightblue);
     g.setFont (14.0f);
+    Font cFont = g.getCurrentFont();
+    // TODO V Figure out how to set the font globally
+    // Figure out how to calculate the font height at the right time.
+    m_fCurrentFontHeight = cFont.getHeight();
 }
 
 void IdeaNewComponent::resized()
@@ -51,6 +56,7 @@ void IdeaNewComponent::resized()
     // components that your component contains..
     //m_pHeadLine->setBounds (getLocalBounds().reduced (4));
     //m_pHeadDescription->setBounds (getLocalBounds().reduced (4));
-    m_pHeadLine->setBounds(0,0, getWidth(), 20);
-    m_pHeadDescription->setBounds(0,20, getWidth(), 20);
+    int nTextHeight = int( m_fCurrentFontHeight * 1.1 ) + 3;
+    m_pHeadLine->setBounds(0,0, getWidth(), nTextHeight);
+    m_pHeadDescription->setBounds(0, m_pHeadLine->getBottom(), getWidth(), 80);
 }

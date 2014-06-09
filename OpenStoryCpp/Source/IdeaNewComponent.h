@@ -27,6 +27,8 @@ public:
 private:
     TextPropertyComponent *m_pHeadLine;
     TextPropertyComponent *m_pHeadDescription;
+    
+    float m_fCurrentFontHeight;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IdeaNewComponent)
 };
 
