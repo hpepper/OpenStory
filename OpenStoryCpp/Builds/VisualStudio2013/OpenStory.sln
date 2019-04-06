@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2013
+Project("{733E5A5B-0111-816F-EA76-3FF887C16444}") = "OpenStory", "OpenStory.vcxproj", "{2C09342F-D6C3-9FD5-1AA1-A80793E68561}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2C09342F-D6C3-9FD5-1AA1-A80793E68561}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2C09342F-D6C3-9FD5-1AA1-A80793E68561}.Debug|Win32.Build.0 = Debug|Win32
+		{2C09342F-D6C3-9FD5-1AA1-A80793E68561}.Release|Win32.ActiveCfg = Release|Win32
+		{2C09342F-D6C3-9FD5-1AA1-A80793E68561}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
