@@ -37,6 +37,7 @@ private:
     StorageSave *m_pStorageSave;
 
     QLineEdit *m_lineSceneName;
+    QTextEdit *m_textBehindTheScene;
 
     enum { NumGridRows = 3, NumButtons = 4 };
 
@@ -47,8 +48,7 @@ private:
     QAction *exitAction;
 
     QLabel *labels[NumGridRows];
-    QLineEdit *lineEdits[NumGridRows];
-    QTextEdit *smallEditor;
+
 
     QWidget *mainWindowArea;
 

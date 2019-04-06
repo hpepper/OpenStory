@@ -49,6 +49,16 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
     gridLayoutArea->addWidget(m_lineSceneName,0,1,1,1);
 
 
+    // 0th row
+    QLabel *labelBehindTheSceneLabel = new QLabel(this);
+    labelBehindTheSceneLabel->setText("Scene name:");
+    gridLayoutArea->addWidget(labelBehindTheSceneLabel,1,0,1,1);
+
+    m_textBehindTheScene = new QTextEdit(this);
+    m_textBehindTheScene->setText("");
+    // TODO Add some sort of 'on exit' to go and save the sheet.
+    gridLayoutArea->addWidget(m_textBehindTheScene,1,1,2,1);
+
     /*
 
     createGridGroupBox();
@@ -90,14 +100,14 @@ void MainWindow::createGridGroupBox()
 
     for (int i = 0; i < NumGridRows; ++i) {
         labels[i] = new QLabel(tr("Line %1:").arg(i + 1));
-        lineEdits[i] = new QLineEdit;
         layout->addWidget(labels[i], i + 1, 0);
-        layout->addWidget(lineEdits[i], i + 1, 1);
     }
-    smallEditor = new QTextEdit;
+    //smallEditor = new QTextEdit;
+    /*
     smallEditor->setPlainText(tr("This widget takes up about two thirds of the "
                                  "grid layout."));
-    layout->addWidget(smallEditor, 0, 2, 4, 1);
+                                 */
+    //layout->addWidget(smallEditor, 0, 2, 4, 1);
     layout->setColumnStretch(1, 10);
     layout->setColumnStretch(2, 20);
     gridGroupBox->setLayout(layout);
