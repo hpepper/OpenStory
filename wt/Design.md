@@ -29,7 +29,6 @@ What does this app have to enable me to do?
 * World (drop-down)- Werewolf, vampire, StarWars etc.
   * TODO be able to code the worlds in, since it could help show what challenge rolls to use in the scenes.
 
-
 ## What is needed for admin/configuration
 
 ## What is needed for playing the game
@@ -37,13 +36,13 @@ What does this app have to enable me to do?
 ## View break down
 
 Top row could have the following drop downs, in the row:
+
 * Series
 * Season
 * Episode
 
 Each of these break downs will have a second entry called: New
  First entry is empty.
-
 
 # Thoughts
 
