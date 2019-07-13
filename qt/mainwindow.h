@@ -27,6 +27,19 @@ public:
     MainWindow();
     ~MainWindow();
 
+private slots:
+    void projectnameUpdateSlot();
+
+signals:
+    // Used for sending to StorageSave
+
+    void projectnameUpdate(QString);
+    void projectdescriptionUpdate(QString);
+    void premiseUpdate(QString);
+
+    // These are local sigals for transferring text to the storage class.
+    void signalProjectNameUpdated(QString);
+
 private:
     void createMenu();
     void createGridGroupBox();
@@ -36,8 +49,10 @@ private:
 
     StorageSave *m_pStorageSave;
 
-    QLineEdit *m_lineSceneName;
-    QTextEdit *m_textBehindTheScene;
+    QLineEdit *m_lineProjectName;
+    QTextEdit *m_textProjectDescription;
+
+    QLineEdit *m_linePremise;
 
     enum { NumGridRows = 3, NumButtons = 4 };
 

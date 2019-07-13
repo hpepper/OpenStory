@@ -37,28 +37,56 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
 
     // Scene (add it under the Encounter)
 
+    // TODO add WhatsThis: https://doc.qt.io/qt-5/qwhatsthis.html
+
     // addWidget(*Widget, row, column, rowspan, colspan)
     // 0th row
-    QLabel *labelSceneNameLabel = new QLabel(this);
-    labelSceneNameLabel->setText("Scene name:");
-    gridLayoutArea->addWidget(labelSceneNameLabel,0,0,1,1);
+    int rowNumber = 0;
+    QLabel *labelProjectName = new QLabel(this);
+    labelProjectName->setText("Project name:");
+    labelProjectName->setToolTip("Just a name that allows you to recognize the project.");
+    gridLayoutArea->addWidget(labelProjectName,rowNumber,0,1,1);
 
-    m_lineSceneName = new QLineEdit(this);
-    m_lineSceneName->setText("");
+    m_lineProjectName = new QLineEdit(this);
+    m_lineProjectName->setText("");
     // TODO Add some sort of 'on exit' to go and save the sheet.
-    gridLayoutArea->addWidget(m_lineSceneName,0,1,1,1);
+    gridLayoutArea->addWidget(m_lineProjectName,rowNumber,1,1,1);
 
 
-    // 0th row
+    // 1st row
+    rowNumber++;
     QLabel *labelBehindTheSceneLabel = new QLabel(this);
-    labelBehindTheSceneLabel->setText("Scene name:");
-    gridLayoutArea->addWidget(labelBehindTheSceneLabel,1,0,1,1);
+    labelBehindTheSceneLabel->setText("Project desctiption:");
+    labelBehindTheSceneLabel->setToolTip("You quick note, to help you remember what you want with this project.");
+    gridLayoutArea->addWidget(labelBehindTheSceneLabel,rowNumber,0,1,1);
 
-    m_textBehindTheScene = new QTextEdit(this);
-    m_textBehindTheScene->setText("");
+    m_textProjectDescription = new QTextEdit(this);
+    m_textProjectDescription->setText("");
     // TODO Add some sort of 'on exit' to go and save the sheet.
-    gridLayoutArea->addWidget(m_textBehindTheScene,1,1,2,1);
+    gridLayoutArea->addWidget(m_textProjectDescription,rowNumber,1,2,1);
 
+
+    // TODO StoryDesign, move into a class, and then put it in a tab
+
+    // TODO Have a dropdown list of all the projects.
+    // TODO
+
+    // 2nd row
+    rowNumber++;
+    QLabel *labelNamePremise = new QLabel(this);
+    labelNamePremise->setText("Premise:");
+    //labelNamePremise->setWhatsThis("WhatsThis");
+    labelNamePremise->setToolTip("ToolTip");
+    gridLayoutArea->addWidget(labelNamePremise,rowNumber,0,1,1);
+
+    m_linePremise = new QLineEdit(this);
+    m_linePremise->setText("");
+    //m_lineNamePremise->setStatusTip("StatusTip");
+    // TODO Add some sort of 'on exit' to go and save the sheet.
+    gridLayoutArea->addWidget(m_linePremise,rowNumber,1,1,1);
+
+
+     // TODO have a draft 'Premise' section that can be 'hidden' collapesed
     /*
 
     createGridGroupBox();
@@ -73,6 +101,32 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
 
      parent->setWindowTitle(tr("Basic Layouts"));
      */
+    /*
+     connect(sender, &Sender::signalName, receiver, &Receiver::slotName);
+     From Mastering QT 5, p17.
+     sender : This is the object that will send the signal. In our example, it is
+              the QPushButton named addTaskButton added from the UI designer.
+     &Sender::signalName : This is the pointer to the member signal function. Here,
+                           we want do something when the clicked signal is triggered.
+     receiver : This is the object that will receive and handle the signal. In our case, it
+                is the QApplication object created in main.cpp .
+     &Receiver::slotName : This is a pointer to one of the receiver's member slot
+                           functions. In this example, we use the built-in quit() slot from Qapplication ,
+                           which will exit the application.
+   */
+
+
+
+    // http://doc.qt.io/qt-5/qcombobox.html
+   // http://doc.qt.io/qt-5/qcombobox.html#currentIndexChanged
+   // https://stackoverflow.com/questions/28071461/qcombobox-connect
+
+   // TODO isModified() for qlineedit
+   // Described under 'Signals' in https://doc.qt.io/qt-5/qlineedit.html
+   // This is for handling the drop down box(s)
+   /* Send a signal when the lineEdit is done, the targeted slot will then get the text and signal it to the storage slot */
+   QObject::connect(m_lineProjectName, SIGNAL(editingFinished()), this, SLOT(projectnameUpdateSlot()));
+   QObject::connect(this, SIGNAL(signalProjectNameUpdated(QString)), m_pStorageSave, SLOT(projectnameUpdate(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -117,4 +171,10 @@ void MainWindow::createStatusBar()
 {
 
     statusBar()->showMessage(tr("Ready"));
+}
+
+
+void MainWindow::projectnameUpdateSlot() {
+    // TODO check if text has changed?
+    emit(signalProjectNameUpdated(m_lineProjectName->text()));
 }

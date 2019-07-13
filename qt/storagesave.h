@@ -15,13 +15,20 @@ class StorageSave : public QObject
 public:
     explicit StorageSave(QObject *parent = nullptr);
 
-/*
 public slots:
-    void prologueUpdate(QString);
-    void crawltextUpdate(QString);
-*/
+    void projectnameUpdate(QString);
+    void projectdescriptionUpdate(QString);
+    void premiseUpdate(QString);
+
 private:
+    void saveXml();
+
+    // TODO V Add function to set the filename.
+    QString m_sXmlFilename = "storytellerdefault.xml";
+
     tinyxml2::XMLDocument *m_pXmlDoc;
+    tinyxml2::XMLElement *m_pGenerel;
+    tinyxml2::XMLElement *m_pStoryDesign;
 
 };
 
