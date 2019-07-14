@@ -127,6 +127,12 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
    /* Send a signal when the lineEdit is done, the targeted slot will then get the text and signal it to the storage slot */
    QObject::connect(m_lineProjectName, SIGNAL(editingFinished()), this, SLOT(projectnameUpdateSlot()));
    QObject::connect(this, SIGNAL(signalProjectNameUpdated(QString)), m_pStorageSave, SLOT(projectnameUpdate(QString)));
+
+   QObject::connect(m_textProjectDescription, SIGNAL(textChanged()), this, SLOT(projectdescriptionUpdateSlot()));
+   QObject::connect(this, SIGNAL(signalProjectDescriptionUpdated(QString)), m_pStorageSave, SLOT(projectdescriptionUpdate(QString)));
+
+   QObject::connect(m_linePremise, SIGNAL(editingFinished()), this, SLOT(premiseUpdateSlot()));
+   QObject::connect(this, SIGNAL(signalPremiseUpdated(QString)), m_pStorageSave, SLOT(premiseUpdate(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -174,7 +180,22 @@ void MainWindow::createStatusBar()
 }
 
 
+
 void MainWindow::projectnameUpdateSlot() {
     // TODO check if text has changed?
     emit(signalProjectNameUpdated(m_lineProjectName->text()));
+}
+void MainWindow::projectdescriptionUpdateSlot() {
+    // TODO check if text has changed?
+    // See https://doc.qt.io/qt-5/qtimer.html
+    // TODO Set a time so it will only actually save every 5 seconds.
+    /*
+     * Have a timestamp if it has been more than 5s then save otherwise set a timer for 5s
+     * If setting a timer I also need to monitor exit() so that everything is saved before exit.
+     */
+    emit(signalProjectDescriptionUpdated(m_textProjectDescription->toPlainText()));
+}
+void MainWindow::premiseUpdateSlot() {
+    // TODO check if text has changed?
+    emit(signalPremiseUpdated(m_linePremise->text()));
 }

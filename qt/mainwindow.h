@@ -29,6 +29,8 @@ public:
 
 private slots:
     void projectnameUpdateSlot();
+    void projectdescriptionUpdateSlot();
+    void premiseUpdateSlot();
 
 signals:
     // Used for sending to StorageSave
@@ -39,6 +41,8 @@ signals:
 
     // These are local sigals for transferring text to the storage class.
     void signalProjectNameUpdated(QString);
+    void signalProjectDescriptionUpdated(QString);
+    void signalPremiseUpdated(QString);
 
 private:
     void createMenu();
