@@ -1,11 +1,15 @@
 #include "mainwindow.h"
 
 #include <QVBoxLayout>
+#include <QDateTime>
+
+#include <QDebug>
 
 #include <QGridLayout>
 #include <QPushButton>
 
 #include <QStatusBar>
+#include <QTimer>
 #include <QWidget>
 
 // See: http://doc.qt.io/qt-5/qmainwindow.html#details
@@ -129,6 +133,9 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
    QObject::connect(this, SIGNAL(signalProjectNameUpdated(QString)), m_pStorageSave, SLOT(projectnameUpdate(QString)));
 
    QObject::connect(m_textProjectDescription, SIGNAL(textChanged()), this, SLOT(projectdescriptionUpdateSlot()));
+
+
+   QObject::connect(m_textProjectDescription, SIGNAL(textChanged()), this, SLOT(projectdescriptionUpdateSlot()));
    QObject::connect(this, SIGNAL(signalProjectDescriptionUpdated(QString)), m_pStorageSave, SLOT(projectdescriptionUpdate(QString)));
 
    QObject::connect(m_linePremise, SIGNAL(editingFinished()), this, SLOT(premiseUpdateSlot()));
@@ -186,15 +193,41 @@ void MainWindow::projectnameUpdateSlot() {
     emit(signalProjectNameUpdated(m_lineProjectName->text()));
 }
 void MainWindow::projectdescriptionUpdateSlot() {
-    // TODO check if text has changed?
-    // See https://doc.qt.io/qt-5/qtimer.html
-    // TODO Set a time so it will only actually save every 5 seconds.
+    qDebug() << "projectdescriptionUpdateSlot() ENTRY";
+    // This function can be triggered by both; changes in the description text area and a time set by this function.
     /*
      * Have a timestamp if it has been more than 5s then save otherwise set a timer for 5s
      * If setting a timer I also need to monitor exit() so that everything is saved before exit.
      */
+    qint64 nCurrentEpoch = QDateTime::currentSecsSinceEpoch();
+    qDebug() << "projectdescriptionUpdateSlot() last epoch...: " << m_nLastEpochSaveProjectDescription;
+    qDebug() << "projectdescriptionUpdateSlot() current epoch: " << nCurrentEpoch;
+    if (( nCurrentEpoch - m_nLastEpochSaveProjectDescription) >= m_nSecondsBetweenQtEditSaves ) {
+        m_nLastEpochSaveProjectDescription = nCurrentEpoch;
+        projectdescriptionUpdateSlotTimeOutSave();
+    } else {
+        // if it is less than 5s since last, save, then set a oneshot for the delta to 5s
+        qDebug() << "projectdescriptionUpdateSlot() wait for next save?" ;
+        if (!m_bSaveTriggerSetForProjectDescription) {
+            // if the timer hasn't been set, then set it.
+            int deltaMiliseconds = int (1000 * m_nSecondsBetweenQtEditSaves);
+            qDebug() << "projectdescriptionUpdateSlot() setting wait timer to " << deltaMiliseconds;
+            m_bSaveTriggerSetForProjectDescription = true;
+
+            QTimer::singleShot(deltaMiliseconds, this, SLOT(projectdescriptionUpdateSlotTimeOutSave()));
+        }
+        // See https://doc.qt.io/qt-5/qtimer.html
+    }
+    // TODO V Have a way to handle if we exit without having saved known changes.
+    //  e.g. having a dictionary of unsaved fields, that could then be done emit on? at save??
+}
+
+void MainWindow::projectdescriptionUpdateSlotTimeOutSave() {
+    qDebug() << "projectdescriptionUpdateSlotTimeOutSave()";
+    m_bSaveTriggerSetForProjectDescription = false;
     emit(signalProjectDescriptionUpdated(m_textProjectDescription->toPlainText()));
 }
+
 void MainWindow::premiseUpdateSlot() {
     // TODO check if text has changed?
     emit(signalPremiseUpdated(m_linePremise->text()));

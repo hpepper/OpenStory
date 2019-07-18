@@ -30,6 +30,7 @@ public:
 private slots:
     void projectnameUpdateSlot();
     void projectdescriptionUpdateSlot();
+    void projectdescriptionUpdateSlotTimeOutSave();
     void premiseUpdateSlot();
 
 signals:
@@ -72,6 +73,13 @@ private:
     QWidget *mainWindowArea;
 
     QGridLayout *gridLayout;
+
+    qint64 m_nLastEpochSaveProjectDescription = 0;
+
+    // How many seconds to wait between commits of QtEdit fields.
+    const qint64 m_nSecondsBetweenQtEditSaves = 5;
+
+    bool m_bSaveTriggerSetForProjectDescription = false;
 };
 
 #endif // MAINWINDOW_H

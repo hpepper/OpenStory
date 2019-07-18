@@ -64,7 +64,7 @@ void StorageSave::projectnameUpdate(QString sText) {
 void StorageSave::projectdescriptionUpdate(QString sText) {
     tinyxml2::XMLElement * pElement = m_pGenerel->FirstChildElement("ProjectDescription");
     if (pElement != nullptr) {
-        qDebug() << "Saving project description: " << sText;
+        qDebug() << "projectdescriptionUpdate() Saving project description: " << sText;
         pElement->SetText(sText.toStdString().c_str());
         saveXml();
     }
