@@ -50,6 +50,11 @@ private:
     void createGridGroupBox();
     void createStatusBar();
 
+    void quitApp();
+    void openFile();
+    bool fileSaveAs();
+    bool fileSave();
+
     QGridLayout *gridLayoutArea;
 
     StorageSave *m_pStorageSave;

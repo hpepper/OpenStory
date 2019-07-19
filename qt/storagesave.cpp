@@ -48,8 +48,35 @@ StorageSave::StorageSave(QObject *parent) : QObject(parent)
 } // end StorageSave::StorageSave
 
 
-void StorageSave::saveXml() {
-    m_pXmlDoc->SaveFile( m_sXmlFilename.toStdString().c_str() );
+void StorageSave::setCurrentFileName(QString fileName) {
+    // TODO any pre investigation?
+    m_sXmlFilename = fileName;
+}
+
+/**
+ * @brief StorageSave::getCurrentFileName
+ * @return "" if not set(default filename) otherwise the
+ */
+QString StorageSave::getCurrentFileName() {
+    QString sCurrentFileName = "";
+
+    // if the default name is still in use, then just return ""
+    if ( m_sXmlFilename != defaultFileName) {
+        sCurrentFileName = m_sXmlFilename;
+    }
+    return(sCurrentFileName);
+}
+
+
+bool StorageSave::saveXml() {
+    bool saveWorked = false;
+
+    // XMLError is an enum
+    tinyxml2::XMLError enumValue = m_pXmlDoc->SaveFile( m_sXmlFilename.toStdString().c_str() );
+    if ( enumValue == tinyxml2::XML_SUCCESS ) {
+        saveWorked = true;
+    }
+    return(saveWorked);
 }
 
 void StorageSave::projectnameUpdate(QString sText) {

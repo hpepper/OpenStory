@@ -14,6 +14,9 @@ class StorageSave : public QObject
     Q_OBJECT
 public:
     explicit StorageSave(QObject *parent = nullptr);
+    void setCurrentFileName(QString);
+    QString getCurrentFileName();
+    bool saveXml();
 
 public slots:
     void projectnameUpdate(QString);
@@ -21,14 +24,15 @@ public slots:
     void premiseUpdate(QString);
 
 private:
-    void saveXml();
 
-    // TODO V Add function to set the filename.
-    QString m_sXmlFilename = "storytellerdefault.xml";
+    const QString defaultFileName = "storytellerdefault.xml";
+    QString m_sXmlFilename = defaultFileName;
 
+    // http://leethomason.github.io/tinyxml2/
     tinyxml2::XMLDocument *m_pXmlDoc;
     tinyxml2::XMLElement *m_pGenerel;
     tinyxml2::XMLElement *m_pStoryDesign;
+
 
 };
 

@@ -1,15 +1,20 @@
 #include "mainwindow.h"
 
 #include <QVBoxLayout>
-#include <QDateTime>
 
+#include <QDateTime>
 #include <QDebug>
 
+#include <QFileDialog>
+
 #include <QGridLayout>
+
 #include <QPushButton>
 
 #include <QStatusBar>
+
 #include <QTimer>
+
 #include <QWidget>
 
 // See: http://doc.qt.io/qt-5/qmainwindow.html#details
@@ -152,10 +157,88 @@ void MainWindow::createMenu()
     menuBar = new QMenuBar;
 
     fileMenu = new QMenu(tr("&File"), this);
-    exitAction = fileMenu->addAction(tr("E&xit"));
+
+    // Ctrl+Q
+    fileMenu->addAction(tr("E&xit"), this, &MainWindow::quitApp,  QKeySequence::Quit);
     menuBar->addMenu(fileMenu);
 
+    //Shift+Ctrl+S : Save As.
+    fileMenu->addAction(tr("&Save As..."), this, &MainWindow::fileSaveAs, QKeySequence::SaveAs);
+
+    // https://doc.qt.io/qt-5/qkeysequence.html#details
+    //fileMenu->addAction(tr("&Open..."), this, SLOT(openFile()),  QKeySequence(tr("Ctrl+O", "File|Open")));
+    fileMenu->addAction(tr("&Open..."), this, &MainWindow::openFile,  QKeySequence(tr("Ctrl+O", "File|Open")));
+    // Note the "File|Open" translator comment. It is by no means necessary, but it provides some context for the human translator.
     //connect(exitAction, SIGNAL(triggered()), this, SLOT(accept()));
+    // QKeySequence::Close
+    // QKeySequence::New
+    // QKeySequence::Quit
+    // QKeySequence::Save
+    // QKeySequence::WhatsThis
+}
+
+void MainWindow::openFile()
+{
+    qDebug() << "Call to openFile()";
+}
+
+void MainWindow::quitApp()
+{
+    qDebug() << "Call to quitApp()";
+}
+
+// From: ./widgets/richtext/textedit/textedit.cpp
+bool MainWindow::fileSave()
+{
+    // If the current file name hasn't been set, then call fileSaveAs() first
+    if (m_pStorageSave->getCurrentFileName() == "")
+        return fileSaveAs();
+    /* TODO: what is this=
+    if (fileName.startsWith(QStringLiteral(":/")))
+        return fileSaveAs();
+     */
+
+    bool success = m_pStorageSave->saveXml();
+    if (success) {
+        qDebug() << "fileSave(): success";
+        // textEdit->document()->setModified(false);
+        // statusBar()->showMessage(tr("Wrote \"%1\"").arg(QDir::toNativeSeparators(fileName)));
+    } else {
+        qDebug() << "fileSave(): failed";
+        //statusBar()->showMessage(tr("Could not write to file \"%1\"").arg(QDir::toNativeSeparators(fileName)));
+    }
+    return success;
+}
+
+bool MainWindow::fileSaveAs()
+{
+    // fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home/jana", tr("Image Files (*.png *.jpg *.bmp)"));
+    // "Open Image" titel of the modal window.
+
+    // 'Save as...' is the title in the modal window.
+    QFileDialog fileDialog(this, tr("Save as..."));
+    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+
+    // https://en.wikipedia.org/wiki/XML_and_MIME
+    // http://www.iana.org/assignments/media-types/media-types.xhtml
+    // https://tools.ietf.org/html/rfc7303#page-21
+
+    // This belows here, tells it what suffix filters to use, based on the mimetype (here it will be .xml)
+    QStringList mimeTypes;
+    mimeTypes << "text/xml";
+    fileDialog.setMimeTypeFilters(mimeTypes);
+    // I think this is when you have a list of multiple mimetypes, like different image types, then this sets the default one to use.
+    fileDialog.setDefaultSuffix("xml");
+
+    // TODO save the last default directory, e.g. in the .ini file.
+
+    // Execute the dialog.
+    if (fileDialog.exec() != QDialog::Accepted)
+        return false;
+    const QString selectedFilename = fileDialog.selectedFiles().first();
+    m_pStorageSave->setCurrentFileName(selectedFilename);
+    qDebug() << "Call to fileSaveAs()" << selectedFilename;
+    return fileSave();
 }
 
 
@@ -182,7 +265,6 @@ void MainWindow::createGridGroupBox()
 
 void MainWindow::createStatusBar()
 {
-
     statusBar()->showMessage(tr("Ready"));
 }
 
