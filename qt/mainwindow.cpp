@@ -158,9 +158,11 @@ void MainWindow::createMenu()
 
     fileMenu = new QMenu(tr("&File"), this);
 
-    // Ctrl+Q
-    fileMenu->addAction(tr("E&xit"), this, &MainWindow::quitApp,  QKeySequence::Quit);
     menuBar->addMenu(fileMenu);
+
+    // QKeySequence::Save
+    //Shift+Ctrl+S : Save As.
+    fileMenu->addAction(tr("&Save"), this, &MainWindow::fileSave, QKeySequence::Save);
 
     //Shift+Ctrl+S : Save As.
     fileMenu->addAction(tr("&Save As..."), this, &MainWindow::fileSaveAs, QKeySequence::SaveAs);
@@ -173,7 +175,8 @@ void MainWindow::createMenu()
     // QKeySequence::Close
     // QKeySequence::New
     // QKeySequence::Quit
-    // QKeySequence::Save
+    // Ctrl+Q
+    fileMenu->addAction(tr("E&xit"), this, &MainWindow::quitApp,  QKeySequence::Quit);
     // QKeySequence::WhatsThis
 }
 
