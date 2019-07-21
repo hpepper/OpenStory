@@ -16,7 +16,12 @@ public:
     explicit StorageSave(QObject *parent = nullptr);
     void setCurrentFileName(QString);
     QString getCurrentFileName();
+    bool loadXml();
     bool saveXml();
+
+    QString getProjectName();
+    QString getProjectDescription();
+    QString getPremise();
 
 public slots:
     void projectnameUpdate(QString);

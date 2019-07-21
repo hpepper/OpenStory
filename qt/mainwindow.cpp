@@ -180,9 +180,43 @@ void MainWindow::createMenu()
     // QKeySequence::WhatsThis
 }
 
-void MainWindow::openFile()
+bool MainWindow::openFile()
 {
     qDebug() << "Call to openFile()";
+    // 'Save as...' is the title in the modal window.
+    QFileDialog fileDialog(this, tr("Open file"));
+    fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+
+    // https://en.wikipedia.org/wiki/XML_and_MIME
+    // http://www.iana.org/assignments/media-types/media-types.xhtml
+    // https://tools.ietf.org/html/rfc7303#page-21
+
+    // This belows here, tells it what suffix filters to use, based on the mimetype (here it will be .xml)
+    QStringList mimeTypes;
+    mimeTypes << "text/xml";
+    fileDialog.setMimeTypeFilters(mimeTypes);
+    // I think this is when you have a list of multiple mimetypes, like different image types, then this sets the default one to use.
+    fileDialog.setDefaultSuffix("xml");
+
+    // TODO save the last default directory, e.g. in the .ini file.
+
+    // Execute the dialog.
+    if (fileDialog.exec() != QDialog::Accepted)
+        return false;
+    const QString selectedFilename = fileDialog.selectedFiles().first();
+    m_pStorageSave->setCurrentFileName(selectedFilename);
+    qDebug() << "Call to Open()" << selectedFilename;
+    bool success = m_pStorageSave->loadXml();
+    // TODO clear out all views, when loading a new file, or when doing a 'New'
+    // TODO Populate current display (tab) (move this code to a separate function
+    QString text;
+    text = m_pStorageSave->getProjectName();
+    m_lineProjectName->setText(text);
+    text = m_pStorageSave->getProjectDescription();
+    m_textProjectDescription->setText(text);
+    text = m_pStorageSave->getPremise();
+    m_linePremise->setText(text);
+    return success;
 }
 
 void MainWindow::quitApp()

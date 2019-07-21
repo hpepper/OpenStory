@@ -1,4 +1,5 @@
 *.o
+.bak
 .vscode
 storyteller
 .DS_Store
@@ -7,3 +8,8 @@ build
 npm-debug.log
 tmp
 .map
+
+
+# I think this is the local thing
+StoryTeller.pro.user
+

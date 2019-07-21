@@ -10,6 +10,14 @@
 
 // TODO Later handle that it might be a newer version of XML being read in.
 /** Currently The whole structure is created here.
+ *
+ * Adding a new Group:
+ *  Add it in New
+ * Add it in loadXml
+ *
+ * Adding a new field:
+ *  Add it to new
+ *  Add a load function.
  */
 // TODO later on read of the XML, fill out the missing part of the structure.
 StorageSave::StorageSave(QObject *parent) : QObject(parent)
@@ -20,6 +28,7 @@ StorageSave::StorageSave(QObject *parent) : QObject(parent)
     // https://shilohjames.wordpress.com/2014/04/27/tinyxml2-tutorial/
     // TODO Add the <!DOCTYPE ADVENTURE SYSTEM "story.dtd">
     m_pXmlDoc = new tinyxml2::XMLDocument;
+    // TODO move all of this into a 'New()' function.
     tinyxml2::XMLElement *pRoot = m_pXmlDoc->NewElement("STORY");
     pRoot->SetAttribute("Version", "0.1.0");
 
@@ -43,8 +52,6 @@ StorageSave::StorageSave(QObject *parent) : QObject(parent)
     // -- STORYDESIGN
     pElement = m_pXmlDoc->NewElement("Premise");
     m_pStoryDesign->InsertEndChild(pElement);
-
-
 } // end StorageSave::StorageSave
 
 
@@ -68,6 +75,32 @@ QString StorageSave::getCurrentFileName() {
 }
 
 
+bool StorageSave::loadXml() {
+    bool loadWorked = false;
+
+    // XMLError is an enum
+    tinyxml2::XMLError enumValue = m_pXmlDoc->LoadFile( m_sXmlFilename.toStdString().c_str() );
+    if ( enumValue == tinyxml2::XML_SUCCESS ) {
+        // TODO populate all the reference stuff
+        tinyxml2::XMLElement *pRoot = m_pXmlDoc->RootElement();
+        if ( pRoot != nullptr ) {
+            qDebug() << "loadXml(): root element found";
+            m_pGenerel = pRoot->FirstChildElement("Genrel");
+            if ( m_pGenerel != nullptr ) {
+                qDebug() << "loadXml(): Set m_pGenerel";
+            }
+            m_pStoryDesign = pRoot->FirstChildElement("StoryDesign");
+            if ( m_pStoryDesign != nullptr ) {
+                qDebug() << "loadXml(): Set m_pStoryDesign";
+            }
+        }
+        loadWorked = true;
+    }
+    // TODO Possibly populate the missing entries in the XML?
+    return(loadWorked);
+}
+
+
 bool StorageSave::saveXml() {
     bool saveWorked = false;
 
@@ -78,6 +111,44 @@ bool StorageSave::saveXml() {
     }
     return(saveWorked);
 }
+
+QString StorageSave::getProjectName()
+{
+    QString textContent = "";
+    tinyxml2::XMLElement * pElement = m_pGenerel->FirstChildElement("ProjectName");
+    if (pElement != nullptr) {
+        textContent = pElement->GetText();
+    } else {
+        qDebug() << "getProjectName(): TODO init the entry and save the XML?";
+    }
+    return(textContent);
+}
+
+
+QString StorageSave::getProjectDescription()
+{
+    QString textContent = "";
+    tinyxml2::XMLElement * pElement = m_pGenerel->FirstChildElement("ProjectDescription");
+    if (pElement != nullptr) {
+        textContent = pElement->GetText();
+    } else {
+        qDebug() << "getProjectDescription(): TODO init the entry and save the XML?";
+    }
+    return(textContent);
+}
+
+QString StorageSave::getPremise()
+{
+    QString textContent = "";
+    tinyxml2::XMLElement * pElement = m_pStoryDesign->FirstChildElement("Premise");
+    if (pElement != nullptr) {
+        textContent = pElement->GetText();
+    } else {
+        qDebug() << "getPremise(): TODO init the entry and save the XML?";
+    }
+    return(textContent);
+}
+
 
 void StorageSave::projectnameUpdate(QString sText) {
     qDebug() << "Called update for project name: " << sText;

@@ -51,7 +51,7 @@ private:
     void createStatusBar();
 
     void quitApp();
-    void openFile();
+    bool openFile();
     bool fileSaveAs();
     bool fileSave();
 
