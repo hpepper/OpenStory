@@ -106,6 +106,8 @@ private:
     const qint64 m_nSecondsBetweenQtEditSaves = 5;
 
     bool m_bSaveTriggerSetForProjectDescription = false;
+
+    QString m_currentDirectory = "";
 };
 
 #endif // MAINWINDOW_H

@@ -222,6 +222,10 @@ void MainWindow::writeSettings()
     m_settings.setValue("size", size());
     m_settings.setValue("pos", pos());
     m_settings.endGroup();
+    if ( m_currentDirectory != "") {
+        m_settings.setValue("currentDirectory", m_currentDirectory);
+
+    }
 }
 
 void MainWindow::readSettings()
@@ -230,6 +234,9 @@ void MainWindow::readSettings()
     resize(m_settings.value("size", QSize(400, 400)).toSize());
     move(m_settings.value("pos", QPoint(200, 200)).toPoint());
     m_settings.endGroup();
+
+    m_currentDirectory = m_settings.value("currentDirectory").toString();
+    qDebug() << "Call to readSettings() - Dir: " << m_currentDirectory;
 }
 
 // From: https://doc.qt.io/archives/qt-4.8/qt-mainwindows-recentfiles-mainwindow-cpp.html
@@ -398,6 +405,9 @@ bool MainWindow::fileSaveAs()
     // 'Save as...' is the title in the modal window.
     QFileDialog fileDialog(this, tr("Save as..."));
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+    if ( m_currentDirectory != " ") {
+        fileDialog.setDirectory(m_currentDirectory);
+    }
 
     // https://en.wikipedia.org/wiki/XML_and_MIME
     // http://www.iana.org/assignments/media-types/media-types.xhtml
@@ -417,7 +427,9 @@ bool MainWindow::fileSaveAs()
         return false;
     const QString selectedFilename = fileDialog.selectedFiles().first();
     m_pStorageSave->setCurrentFileName(selectedFilename);
+    m_currentDirectory = fileDialog.directory().path();
     qDebug() << "Call to fileSaveAs()" << selectedFilename;
+    qDebug() << "Call to fileSaveAs() - Dir: " << m_currentDirectory;
     return fileSave();
 }
 
