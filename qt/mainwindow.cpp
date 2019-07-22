@@ -2,6 +2,10 @@
 
 #include <QVBoxLayout>
 
+#include <QApplication>
+
+#include <QCloseEvent>
+
 #include <QDateTime>
 #include <QDebug>
 
@@ -23,6 +27,7 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
 {
 
     m_pStorageSave = new StorageSave;
+
     gridLayoutArea = new QGridLayout;
     mainWindowArea->setLayout(gridLayoutArea);
 
@@ -145,6 +150,9 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
 
    QObject::connect(m_linePremise, SIGNAL(editingFinished()), this, SLOT(premiseUpdateSlot()));
    QObject::connect(this, SIGNAL(signalPremiseUpdated(QString)), m_pStorageSave, SLOT(premiseUpdate(QString)));
+
+   // This must be last.
+   readSettings();
 }
 
 MainWindow::~MainWindow()
@@ -174,10 +182,137 @@ void MainWindow::createMenu()
     //connect(exitAction, SIGNAL(triggered()), this, SLOT(accept()));
     // QKeySequence::Close
     // QKeySequence::New
+    qDebug() << "Call to createMenu() - ";
+    for (int i = 0; i < MaxRecentFiles; ++i) {
+        recentFileActs[i] = new QAction(this);
+        recentFileActs[i]->setVisible(false);
+        recentFileActs[i]->setToolTip("TODO Full lenght file path");
+        // TODO set up the trigger correctly, to load the file.
+        connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
+    }
+    separatorAct = fileMenu->addSeparator();
+    for (int i = 0; i < MaxRecentFiles; ++i) {
+        fileMenu->addAction(recentFileActs[i]);
+    }
+    fileMenu->addSeparator();
     // QKeySequence::Quit
     // Ctrl+Q
-    fileMenu->addAction(tr("E&xit"), this, &MainWindow::quitApp,  QKeySequence::Quit);
+    // https://doc.qt.io/qt-5/qapplication.html
+    // It seems that closeAllWindows() eventually emits the closeEvent().
+    fileMenu->addAction(tr("E&xit"), this,  &QApplication::closeAllWindows,  QKeySequence::Quit);
     // QKeySequence::WhatsThis
+    updateRecentFileActions();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    if (userReallyWantsToQuit()) {
+        // TODO if maybeSave()
+        writeSettings();
+        event->accept();
+    } else {
+        event->ignore();
+    }
+}
+
+// https://doc.qt.io/qt-5/qsettings.html#details
+void MainWindow::writeSettings()
+{
+    m_settings.beginGroup("MainWindow");
+    m_settings.setValue("size", size());
+    m_settings.setValue("pos", pos());
+    m_settings.endGroup();
+}
+
+void MainWindow::readSettings()
+{
+    m_settings.beginGroup("MainWindow");
+    resize(m_settings.value("size", QSize(400, 400)).toSize());
+    move(m_settings.value("pos", QPoint(200, 200)).toPoint());
+    m_settings.endGroup();
+}
+
+// From: https://doc.qt.io/archives/qt-4.8/qt-mainwindows-recentfiles-mainwindow-cpp.html
+void MainWindow::setCurrentFile(const QString &fileName)
+{
+    qDebug() << "Call to setCurrentFile()";
+
+    QString curFile = fileName;
+    setWindowFilePath(curFile);
+
+    QSettings settings;
+    QStringList files = settings.value("recentFileList").toStringList();
+    files.removeAll(fileName);
+    files.prepend(fileName);
+    while (files.size() > MaxRecentFiles)
+        files.removeLast();
+
+    settings.setValue("recentFileList", files);
+
+    foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+        MainWindow *mainWin = qobject_cast<MainWindow *>(widget);
+        if (mainWin)
+            mainWin->updateRecentFileActions();
+    }
+}
+// From: https://doc.qt.io/archives/qt-4.8/qt-mainwindows-recentfiles-mainwindow-cpp.html
+void MainWindow::updateRecentFileActions()
+{
+    qDebug() << "Call to updateRecentFileActions()";
+    QStringList files = m_settings.value("recentFileList").toStringList();
+
+    int numRecentFiles = qMin(files.size(), (int)MaxRecentFiles);
+
+    for (int i = 0; i < numRecentFiles; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(strippedName(files[i]));
+        recentFileActs[i]->setText(text);
+        recentFileActs[i]->setData(files[i]);
+        recentFileActs[i]->setVisible(true);
+    }
+    for (int j = numRecentFiles; j < MaxRecentFiles; ++j)
+        recentFileActs[j]->setVisible(false);
+
+    separatorAct->setVisible(numRecentFiles > 0);
+}
+// From: https://doc.qt.io/archives/qt-4.8/qt-mainwindows-recentfiles-mainwindow-cpp.html
+QString MainWindow::strippedName(const QString &fullFileName)
+{
+    qDebug() << "Call to strippedName()";
+    return QFileInfo(fullFileName).fileName();
+}
+
+void MainWindow::openRecentFile()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+        loadFile(action->data().toString());
+}
+
+// from: https://doc.qt.io/qt-5/qtwidgets-mainwindows-application-example.html
+bool MainWindow::maybeSave()
+{
+    /* TODO implement this later.
+    if (!textEdit->document()->isModified())
+        return true;
+    const QMessageBox::StandardButton ret
+        = QMessageBox::warning(this, tr("Application"),
+                               tr("The document has been modified.\n"
+                                  "Do you want to save your changes?"),
+                               QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    switch (ret) {
+    case QMessageBox::Save:
+        return save();
+    case QMessageBox::Cancel:
+        return false;
+    default:
+        break;
+    }
+    */
+    return true;
+}
+
+bool MainWindow::userReallyWantsToQuit() {
+    return true;
 }
 
 bool MainWindow::openFile()
@@ -204,7 +339,14 @@ bool MainWindow::openFile()
     if (fileDialog.exec() != QDialog::Accepted)
         return false;
     const QString selectedFilename = fileDialog.selectedFiles().first();
+    bool success = loadFile(selectedFilename);
+    return success;
+}
+
+// This acutally loads the file and loads the data from the file to the view.
+bool MainWindow::loadFile(QString selectedFilename) {
     m_pStorageSave->setCurrentFileName(selectedFilename);
+    setCurrentFile(selectedFilename);
     qDebug() << "Call to Open()" << selectedFilename;
     bool success = m_pStorageSave->loadXml();
     // TODO clear out all views, when loading a new file, or when doing a 'New'
@@ -240,6 +382,7 @@ bool MainWindow::fileSave()
         qDebug() << "fileSave(): success";
         // textEdit->document()->setModified(false);
         // statusBar()->showMessage(tr("Wrote \"%1\"").arg(QDir::toNativeSeparators(fileName)));
+        setCurrentFile(m_pStorageSave->getCurrentFileName());
     } else {
         qDebug() << "fileSave(): failed";
         //statusBar()->showMessage(tr("Could not write to file \"%1\"").arg(QDir::toNativeSeparators(fileName)));

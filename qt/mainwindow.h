@@ -1,20 +1,21 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-
-#include <QMenuBar>
-#include <QMenu>
-
-#include <QLabel>
-
-#include <QLineEdit>
-#include <QTextEdit>
-
-
 #include <QGroupBox>
 
 #include <QGridLayout>
+
+#include <QLabel>
+#include <QLineEdit>
+
+#include <QMainWindow>
+#include <QMenuBar>
+#include <QMenu>
+
+#include <QSettings>
+
+#include <QTextEdit>
+
 
 #include "storagesave.h"
 
@@ -25,13 +26,18 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
-    ~MainWindow();
+    ~MainWindow() override;
+
+    // https://doc.qt.io/qt-5/qtwidgets-mainwindows-application-example.html
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void projectnameUpdateSlot();
     void projectdescriptionUpdateSlot();
     void projectdescriptionUpdateSlotTimeOutSave();
     void premiseUpdateSlot();
+    void openRecentFile();
 
 signals:
     // Used for sending to StorageSave
@@ -52,8 +58,23 @@ private:
 
     void quitApp();
     bool openFile();
+    bool loadFile(QString);
     bool fileSaveAs();
     bool fileSave();
+    void writeSettings();
+    void readSettings();
+    bool maybeSave();
+    bool userReallyWantsToQuit();
+    void updateRecentFileActions();
+    QString strippedName(const QString &fullFileName);
+    void setCurrentFile(const QString &fileName);
+
+    QAction *separatorAct;
+    enum { MaxRecentFiles = 5 };
+    QAction *recentFileActs[MaxRecentFiles];
+
+    QSettings m_settings;
+
 
     QGridLayout *gridLayoutArea;
 
