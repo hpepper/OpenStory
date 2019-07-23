@@ -168,6 +168,9 @@ void MainWindow::createMenu()
 
     menuBar->addMenu(fileMenu);
 
+    // QKeySequence::New
+    fileMenu->addAction(tr("&New"), this, &MainWindow::newFile, QKeySequence::New);
+
     // QKeySequence::Save
     //Shift+Ctrl+S : Save As.
     fileMenu->addAction(tr("&Save"), this, &MainWindow::fileSave, QKeySequence::Save);
@@ -181,7 +184,6 @@ void MainWindow::createMenu()
     // Note the "File|Open" translator comment. It is by no means necessary, but it provides some context for the human translator.
     //connect(exitAction, SIGNAL(triggered()), this, SLOT(accept()));
     // QKeySequence::Close
-    // QKeySequence::New
     qDebug() << "Call to createMenu() - ";
     for (int i = 0; i < MaxRecentFiles; ++i) {
         recentFileActs[i] = new QAction(this);
@@ -328,6 +330,9 @@ bool MainWindow::openFile()
     // 'Save as...' is the title in the modal window.
     QFileDialog fileDialog(this, tr("Open file"));
     fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
+    if ( m_currentDirectory != " ") {
+        fileDialog.setDirectory(m_currentDirectory);
+    }
 
     // https://en.wikipedia.org/wiki/XML_and_MIME
     // http://www.iana.org/assignments/media-types/media-types.xhtml
@@ -366,6 +371,13 @@ bool MainWindow::loadFile(QString selectedFilename) {
     text = m_pStorageSave->getPremise();
     m_linePremise->setText(text);
     return success;
+}
+
+bool MainWindow::newFile() {
+    m_pStorageSave->setCurrentFileName("");
+    m_lineProjectName->setText("");
+    m_textProjectDescription->setText("");
+    m_linePremise->setText("");
 }
 
 void MainWindow::quitApp()

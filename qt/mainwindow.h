@@ -57,6 +57,7 @@ private:
     void createStatusBar();
 
     void quitApp();
+    bool newFile();
     bool openFile();
     bool loadFile(QString);
     bool fileSaveAs();
