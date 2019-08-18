@@ -13,6 +13,8 @@
 
 #include <QGridLayout>
 
+#include <QLatin1String>
+
 #include <QPushButton>
 
 #include <QStatusBar>
@@ -23,6 +25,12 @@
 
 // See: http://doc.qt.io/qt-5/qmainwindow.html#details
 // See: http://doc.qt.io/qt-5/qtwidgets-mainwindows-application-example.html
+
+/**
+ * @brief MainWindow::MainWindow
+ *
+ * https://doc.qt.io/qt-5/qwhatsthis.html#details
+ */
 MainWindow::MainWindow() : mainWindowArea(new QWidget)
 {
 
@@ -76,6 +84,7 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
 
     m_textProjectDescription = new QTextEdit(this);
     m_textProjectDescription->setText("");
+    m_textProjectDescription->setWhatsThis("A What is this help text");
     // TODO Add some sort of 'on exit' to go and save the sheet.
     gridLayoutArea->addWidget(m_textProjectDescription,rowNumber,1,2,1);
 
@@ -98,9 +107,29 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
     //m_lineNamePremise->setStatusTip("StatusTip");
     // TODO Add some sort of 'on exit' to go and save the sheet.
     gridLayoutArea->addWidget(m_linePremise,rowNumber,1,1,1);
+    // TODO have a draft 'Premise' section that can be 'hidden' collapesed
 
 
-     // TODO have a draft 'Premise' section that can be 'hidden' collapesed
+    m_mapWidgetToHelpKeyWord.insert(m_linePremise, tr("premise"));
+    QObject::connect(thisApplication, SIGNAL(focusChanged(QWidget*,QWidget*)),
+        this, SLOT(focusChanged(QWidget*,QWidget*)));
+
+    // 3+4th row
+    rowNumber++;
+    m_labelInformationText = new QLabel(this);
+    m_labelInformationText->setText("No relevant infromation:");
+    gridLayoutArea->addWidget(m_labelInformationText,rowNumber,0,1,2);
+
+    // This must be last(except for the help core engine, which depends on the settings).
+    //  and the HelpInformationDisplay().
+    // What was the purpose of having this last?
+    readSettings();
+
+
+    rowNumber++;
+    m_txtbrowserInformationText = new HelpInformationDisplay(this, m_collectionsFileFullPath);
+    gridLayoutArea->addWidget(m_txtbrowserInformationText,rowNumber,0,1,2);
+
     /*
 
     createGridGroupBox();
@@ -115,6 +144,7 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
 
      parent->setWindowTitle(tr("Basic Layouts"));
      */
+
     /*
      connect(sender, &Sender::signalName, receiver, &Receiver::slotName);
      From Mastering QT 5, p17.
@@ -151,8 +181,11 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
    QObject::connect(m_linePremise, SIGNAL(editingFinished()), this, SLOT(premiseUpdateSlot()));
    QObject::connect(this, SIGNAL(signalPremiseUpdated(QString)), m_pStorageSave, SLOT(premiseUpdate(QString)));
 
-   // This must be last.
-   readSettings();
+   // Set-up the help core engine.
+   // TODO set-up a default collection file, relative to the binary file?
+   QString collectionFile = QLatin1String(m_collectionsFileFullPath.toStdString().c_str());
+
+
 }
 
 MainWindow::~MainWindow()
@@ -217,6 +250,32 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
+
+/**
+ * @brief MainWindow::focusChanged
+ * @param previousWidget
+ * @param currentWidget
+ *
+ * See also: https://doc.qt.io/archives/qq/qq08-helpclient.html#suggestedenhancements
+ */
+void MainWindow::focusChanged(QWidget *previousWidget, QWidget *currentWidget)
+{
+    qDebug() << "focusChanged()";
+    if (m_mapWidgetToHelpKeyWord.contains(currentWidget)) {
+        qDebug() << "focusChanged() - currentWidget found in the map.";
+        m_labelInformationText->setText(tr("Information about %1:").arg(m_mapWidgetToHelpKeyWord.value(currentWidget)));
+
+        // Split the explanation text at space ' '
+        QStringList listWords = m_mapWidgetToHelpKeyWord.value(currentWidget).split(QLatin1Char(' '));
+        // Use the last word as keyword.
+        m_txtbrowserInformationText->showHelpTextForKeyword(listWords.last());
+    } else {
+        qDebug() << "focusChanged() - currentWidget found NOT in the map.";
+        m_labelInformationText->setText("No information available");
+    }
+}
+
+
 // https://doc.qt.io/qt-5/qsettings.html#details
 void MainWindow::writeSettings()
 {
@@ -239,6 +298,7 @@ void MainWindow::readSettings()
 
     m_currentDirectory = m_settings.value("currentDirectory").toString();
     qDebug() << "Call to readSettings() - Dir: " << m_currentDirectory;
+    m_collectionsFileFullPath = m_settings.value("collectionFileFullPath").toString();
 }
 
 // From: https://doc.qt.io/archives/qt-4.8/qt-mainwindows-recentfiles-mainwindow-cpp.html
@@ -378,6 +438,7 @@ bool MainWindow::newFile() {
     m_lineProjectName->setText("");
     m_textProjectDescription->setText("");
     m_linePremise->setText("");
+    return(true);
 }
 
 void MainWindow::quitApp()

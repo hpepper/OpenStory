@@ -1,9 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QGroupBox>
-
 #include <QGridLayout>
+#include <QGroupBox>
 
 #include <QLabel>
 #include <QLineEdit>
@@ -16,8 +15,16 @@
 
 #include <QTextEdit>
 
+#include "helpinformationdisplay.h"
 
 #include "storagesave.h"
+
+// This is to allow focus change to be acted on in the application.
+#if defined(thisApplication)
+#undef thisApplication
+#endif
+#define thisApplication (static_cast<QApplication *>(QCoreApplication::instance()))
+
 
 
 class MainWindow : public QMainWindow
@@ -38,6 +45,7 @@ private slots:
     void projectdescriptionUpdateSlotTimeOutSave();
     void premiseUpdateSlot();
     void openRecentFile();
+    void focusChanged(QWidget *previousWidget, QWidget *currentWidget);
 
 signals:
     // Used for sending to StorageSave
@@ -86,6 +94,10 @@ private:
 
     QLineEdit *m_linePremise;
 
+    QLabel *m_labelInformationText;
+
+    HelpInformationDisplay *m_txtbrowserInformationText;
+
     enum { NumGridRows = 3, NumButtons = 4 };
 
     QMenuBar *menuBar;
@@ -101,7 +113,10 @@ private:
 
     QGridLayout *gridLayout;
 
+    QHelpEngineCore *m_helpCoreEngine;
+
     qint64 m_nLastEpochSaveProjectDescription = 0;
+    QString m_collectionsFileFullPath;
 
     // How many seconds to wait between commits of QtEdit fields.
     const qint64 m_nSecondsBetweenQtEditSaves = 5;
@@ -109,6 +124,8 @@ private:
     bool m_bSaveTriggerSetForProjectDescription = false;
 
     QString m_currentDirectory = "";
+
+     QMap<QWidget*, QString> m_mapWidgetToHelpKeyWord;
 };
 
 #endif // MAINWINDOW_H

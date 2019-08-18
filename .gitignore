@@ -8,8 +8,10 @@ build
 npm-debug.log
 tmp
 .map
+*.qhc
+*.qch
 
 
 # I think this is the local thing
-StoryTeller.pro.user
+StoryTeller.pro.user*
 
