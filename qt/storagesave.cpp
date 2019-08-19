@@ -54,6 +54,19 @@ StorageSave::StorageSave(QObject *parent) : QObject(parent)
     m_pStoryDesign->InsertEndChild(pElement);
 } // end StorageSave::StorageSave
 
+tinyxml2::XMLElement *StorageSave::CreateElementInGivenSection(tinyxml2::XMLElement *xmlSection, QString sElementName) {
+    tinyxml2::XMLElement *pNewElement = nullptr;
+    if ( xmlSection != nullptr && sElementName != "") {
+        tinyxml2::XMLElement *pElement = m_pXmlDoc->NewElement(sElementName.toStdString().c_str());
+        if (pElement != nullptr) {
+            xmlSection->InsertEndChild(pElement);
+            pNewElement = xmlSection->FirstChildElement(sElementName.toStdString().c_str());
+            qDebug() << "CreateElementInGivenSection(): added new element: " << sElementName;
+        }
+    }
+    return(pNewElement);
+}
+
 
 void StorageSave::setCurrentFileName(QString fileName) {
     // TODO any pre investigation?
@@ -103,6 +116,8 @@ bool StorageSave::loadXml() {
 
 bool StorageSave::saveXml() {
     bool saveWorked = false;
+
+    // TODO Update 'Version' on save.
 
     // XMLError is an enum
     tinyxml2::XMLError enumValue = m_pXmlDoc->SaveFile( m_sXmlFilename.toStdString().c_str() );
@@ -170,9 +185,14 @@ void StorageSave::projectdescriptionUpdate(QString sText) {
 
 void StorageSave::premiseUpdate(QString sText) {
     tinyxml2::XMLElement * pElement = m_pStoryDesign->FirstChildElement("Premise");
+    if (pElement == nullptr ) {
+        // IF the entry does not exist then, create it
+        pElement = CreateElementInGivenSection(m_pStoryDesign, "Premise");
+    }
     if (pElement != nullptr) {
         qDebug() << "Saving Premise: " << sText;
         pElement->SetText(sText.toStdString().c_str());
         saveXml();
     }
+    // TODO Add error text?
 }

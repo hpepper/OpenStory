@@ -30,6 +30,7 @@ public slots:
 
 private:
 
+    tinyxml2::XMLElement *CreateElementInGivenSection(tinyxml2::XMLElement *xmlSection, QString sElementName);
     const QString defaultFileName = "storytellerdefault.xml";
     QString m_sXmlFilename = defaultFileName;
 
