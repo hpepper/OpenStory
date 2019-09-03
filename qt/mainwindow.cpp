@@ -78,7 +78,7 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
     // 1st row
     rowNumber++;
     QLabel *labelBehindTheSceneLabel = new QLabel(this);
-    labelBehindTheSceneLabel->setText("Project desctiption:");
+    labelBehindTheSceneLabel->setText("Project description:");
     labelBehindTheSceneLabel->setToolTip("You quick note, to help you remember what you want with this project.");
     gridLayoutArea->addWidget(labelBehindTheSceneLabel,rowNumber,0,1,1);
 
@@ -95,6 +95,20 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
     // TODO
 
     // 2nd row
+    rowNumber++;
+    QLabel *labelNameIdea = new QLabel(this);
+    labelNameIdea->setText("Idea:");
+    //labelNamePremise->setWhatsThis("WhatsThis");
+    labelNameIdea->setToolTip("Initial idea of what this story should be");
+    gridLayoutArea->addWidget(labelNameIdea,rowNumber,0,1,1);
+
+    m_lineIdea = new QLineEdit(this);
+    m_lineIdea->setText("");
+    //m_lineNamePremise->setStatusTip("StatusTip");
+    // TODO Add some sort of 'on exit' to go and save the sheet.
+    gridLayoutArea->addWidget(m_lineIdea,rowNumber,1,1,1);
+
+
     rowNumber++;
     QLabel *labelNamePremise = new QLabel(this);
     labelNamePremise->setText("Premise:");
@@ -180,6 +194,10 @@ MainWindow::MainWindow() : mainWindowArea(new QWidget)
 
    QObject::connect(m_linePremise, SIGNAL(editingFinished()), this, SLOT(premiseUpdateSlot()));
    QObject::connect(this, SIGNAL(signalPremiseUpdated(QString)), m_pStorageSave, SLOT(premiseUpdate(QString)));
+
+
+   QObject::connect(m_lineIdea, SIGNAL(editingFinished()), this, SLOT(ideaUpdateSlot()));
+   QObject::connect(this, SIGNAL(signalIdeaUpdated(QString)), m_pStorageSave, SLOT(ideaUpdate(QString)));
 
    // Set-up the help core engine.
    // TODO set-up a default collection file, relative to the binary file?
@@ -430,6 +448,8 @@ bool MainWindow::loadFile(QString selectedFilename) {
     m_textProjectDescription->setText(text);
     text = m_pStorageSave->getPremise();
     m_linePremise->setText(text);
+    text = m_pStorageSave->getIdea();
+    m_lineIdea->setText(text);
     return success;
 }
 
@@ -438,6 +458,7 @@ bool MainWindow::newFile() {
     m_lineProjectName->setText("");
     m_textProjectDescription->setText("");
     m_linePremise->setText("");
+    m_lineIdea->setText("");
     return(true);
 }
 
@@ -539,6 +560,14 @@ void MainWindow::projectnameUpdateSlot() {
     // TODO check if text has changed?
     emit(signalProjectNameUpdated(m_lineProjectName->text()));
 }
+
+
+
+void MainWindow::ideaUpdateSlot() {
+    // TODO check if text has changed?
+    emit(signalIdeaUpdated(m_lineIdea->text()));
+}
+
 void MainWindow::projectdescriptionUpdateSlot() {
     qDebug() << "projectdescriptionUpdateSlot() ENTRY";
     // This function can be triggered by both; changes in the description text area and a time set by this function.

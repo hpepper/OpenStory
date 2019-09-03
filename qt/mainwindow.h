@@ -44,6 +44,7 @@ private slots:
     void projectdescriptionUpdateSlot();
     void projectdescriptionUpdateSlotTimeOutSave();
     void premiseUpdateSlot();
+    void ideaUpdateSlot();
     void openRecentFile();
     void focusChanged(QWidget *previousWidget, QWidget *currentWidget);
 
@@ -54,10 +55,11 @@ signals:
     void projectdescriptionUpdate(QString);
     void premiseUpdate(QString);
 
-    // These are local sigals for transferring text to the storage class.
+    // These are local signals for transferring text to the storage class.
     void signalProjectNameUpdated(QString);
     void signalProjectDescriptionUpdated(QString);
     void signalPremiseUpdated(QString);
+    void signalIdeaUpdated(QString);
 
 private:
     void createMenu();
@@ -93,6 +95,7 @@ private:
     QTextEdit *m_textProjectDescription;
 
     QLineEdit *m_linePremise;
+    QLineEdit *m_lineIdea;
 
     QLabel *m_labelInformationText;
 

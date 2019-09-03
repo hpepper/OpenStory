@@ -19,11 +19,13 @@ public:
     bool loadXml();
     bool saveXml();
 
+    QString getIdea();
     QString getProjectName();
     QString getProjectDescription();
     QString getPremise();
 
 public slots:
+    void ideaUpdate(QString);
     void projectnameUpdate(QString);
     void projectdescriptionUpdate(QString);
     void premiseUpdate(QString);

@@ -52,6 +52,8 @@ StorageSave::StorageSave(QObject *parent) : QObject(parent)
     // -- STORYDESIGN
     pElement = m_pXmlDoc->NewElement("Premise");
     m_pStoryDesign->InsertEndChild(pElement);
+    pElement = m_pXmlDoc->NewElement("Idea");
+    m_pStoryDesign->InsertEndChild(pElement);
 } // end StorageSave::StorageSave
 
 tinyxml2::XMLElement *StorageSave::CreateElementInGivenSection(tinyxml2::XMLElement *xmlSection, QString sElementName) {
@@ -140,6 +142,18 @@ QString StorageSave::getProjectName()
 }
 
 
+QString StorageSave::getIdea()
+{
+    QString textContent = "";
+    tinyxml2::XMLElement * pElement = m_pStoryDesign->FirstChildElement("Idea");
+    if (pElement != nullptr) {
+        textContent = pElement->GetText();
+    } else {
+        qDebug() << "getIdea(): TODO init the entry and save the XML?";
+    }
+    return(textContent);
+}
+
 QString StorageSave::getProjectDescription()
 {
     QString textContent = "";
@@ -178,6 +192,19 @@ void StorageSave::projectdescriptionUpdate(QString sText) {
     tinyxml2::XMLElement * pElement = m_pGenerel->FirstChildElement("ProjectDescription");
     if (pElement != nullptr) {
         qDebug() << "projectdescriptionUpdate() Saving project description: " << sText;
+        pElement->SetText(sText.toStdString().c_str());
+        saveXml();
+    }
+}
+
+void StorageSave::ideaUpdate(QString sText) {
+    qDebug() << "Called update for idea: " << sText;
+    tinyxml2::XMLElement * pElement = m_pStoryDesign->FirstChildElement("Idea");
+    if (pElement == nullptr ) {
+        // IF the entry does not exist then, create it
+        pElement = CreateElementInGivenSection(m_pStoryDesign, "Idea");
+    }
+    if (pElement != nullptr) {
         pElement->SetText(sText.toStdString().c_str());
         saveXml();
     }
