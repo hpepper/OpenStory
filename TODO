@@ -1,0 +1,14 @@
+Start QT project
+Also support cli
+
+Status goal: Identify what has been done and what is missing. 
+  Identify which stories are ready
+  Suggest what the next step/task is (to get the next story done)
+
+Read the planner
+ mark if file reference is missing
+ Read each file
+  has the story plan been done
+  are there at least 4 scenes(if this is a teatime) 
+  is the max 6? (if teatime)
+ 
