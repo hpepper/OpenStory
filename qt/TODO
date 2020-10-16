@@ -1,0 +1,11 @@
+Add 'idea' section, with help and create on missing.
+
+Introduce What-is-it to fields like 'Premise'
+
+
+Have emits for 'Document needs to be saved' and clearing it when the document has been saved.
+  E.g. showing an asterix in the status bar.
+
+Separate the StoryDesign stuff, into a panel and a separate class
+Autogenerate the Qt for for panel and slots, signals and connectors
+ also be able to configure how long the 'recent' list should be

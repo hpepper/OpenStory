@@ -1,0 +1,27 @@
+QGuiApplication
+It emits the lastWindowClosed signal when your application's primary or
+parent window has closed and it's about to exit.
+
+./widgets/itemviews/spreadsheet/spreadsheet.cpp:    cell_addAction = new QAction(tr("&Add"), this);
+./widgets/itemviews/spreadsheet/spreadsheet.cpp:    cell_addAction->setShortcut(Qt::CTRL | Qt::Key_Plus);
+.
+./widgets/itemviews/chart/mainwindow.cpp:    QAction *saveAction = fileMenu->addAction(tr("&Save As..."));
+./widgets/itemviews/chart/mainwindow.cpp:    QAction *quitAction = fileMenu->addAction(tr("E&xit"));
+./widgets/itemviews/simpledommodel/mainwindow.cpp:    fileMenu->addAction(tr("&Open..."), this, &MainWindow::openFile, QKeySequence::Open);
+.
+
+./widgets/widgets/imageviewer/imageviewer.cpp:    saveAsAct = fileMenu->addAction(tr("&Save As..."), this, &ImageViewer::saveAs);
+
+./widgets/widgets/tablet/mainwindow.cpp:    fileMenu->addAction(tr("&Save As..."), this, &MainWindow::save, QKeySequence::SaveAs);
+
+./widgets/widgets/tablet/mainwindow.cpp:    brushMenu->addAction(tr("&Brush Color..."), this, &MainWindow::setBrushColor, tr("Ctrl+B"));
+
+./widgets/widgets/tablet/mainwindow.cpp:    fileMenu->addAction(tr("&Save As..."), this, &MainWindow::save, QKeySequence::SaveAs);
+
+./widgets/richtext/textedit/textedit.cpp:    actionSave = menu->addAction(saveIcon, tr("&Save"), this, &TextEdit::fileSave);
+./widgets/richtext/textedit/textedit.cpp:    tb->addAction(actionSave);
+./widgets/richtext/textedit/textedit.cpp:    a = menu->addAction(tr("Save &As..."), this, &TextEdit::fileSaveAs);
+
+
+./widgets/widgets/charactermap/mainwindow.cpp:    helpMenu->addAction(tr("About &Qt"), qApp, &QApplication::aboutQt);
+

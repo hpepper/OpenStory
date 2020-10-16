@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QtHelpProject version="1.0">
+    <virtualFolder>storyteller</virtualFolder>
+    <namespace>rpg.tools.open</namespace>
+    <filterSection>
+        <keywords>
+            <keyword name="premise" id="premise" ref="premise.html"/>
+        </keywords>
+        <files>
+            <file>premise.html</file>
+        </files>
+    </filterSection>
+</QtHelpProject>
