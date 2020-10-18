@@ -67,14 +67,54 @@ int showSeriesBibleStatus(tinyxml2::XMLElement *xmlElement)
     return (nStatus);
 }
 
-int showSeriesStatus(tinyxml2::XMLElement *xmlRoot)
+int showSeasonStatus(tinyxml2::XMLElement *xmlElement, std::string basePath)
+{
+    int nStatus = 0;
+
+    std::string filename = "";
+
+    const char *attribubteContent = xmlElement->Attribute("Filename");
+    if (attribubteContent != nullptr)
+    {
+        filename = attribubteContent;
+    }
+    else
+    {
+        std::cerr << "EEE 'Filename' atribute not found" << std::endl;
+    }
+
+    if (filename == "")
+    {
+        std::cout << "    Season filename: No entry" << std::endl;
+    }
+    else
+    {
+        std::cout << " TODO Implement handling season; filename:" << filename << std::endl;
+    }
+
+    return (nStatus);
+}
+
+int showSeriesStatus(tinyxml2::XMLElement *xmlRoot, std::string basePath)
 {
     int nStatus = 0;
 
     // TODO get bible
     tinyxml2::XMLElement *xmlSeriesBibleElement = xmlRoot->FirstChildElement("SeriesBible");
     nStatus = showSeriesBibleStatus(xmlSeriesBibleElement);
+
     // TODO go through seasons
+    tinyxml2::XMLElement *xmlSeasonElement = xmlRoot->FirstChildElement("Season");
+    if (xmlSeasonElement == nullptr)
+    {
+        std::cout << "Season: - none defined" << std::endl;
+    }
+    while (xmlSeasonElement)
+    {
+        nStatus = showSeasonStatus(xmlSeasonElement, basePath);
+        // TODO find next
+        xmlSeasonElement = xmlSeasonElement->NextSiblingElement();
+    }
 
     return (nStatus);
 }
@@ -126,7 +166,7 @@ int main(int argc, char *argv[])
         tinyxml2::XMLElement *xmlRoot = xmlDoc->RootElement();
         if (xmlRoot != nullptr)
         {
-            showSeriesStatus(xmlRoot);
+            showSeriesStatus(xmlRoot, directoryPathToSeriesFile);
         }
         else
         {
