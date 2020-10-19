@@ -21,6 +21,9 @@
 
 #include <filesystem> // path
 
+/**
+ * List all the attributes that the given element has.
+ */
 void listAllAttributes(tinyxml2::XMLElement *xmlElement)
 {
     const tinyxml2::XMLAttribute *pAttrib = xmlElement->FirstAttribute();
@@ -67,6 +70,77 @@ int showSeriesBibleStatus(tinyxml2::XMLElement *xmlElement)
     return (nStatus);
 }
 
+int showStatusGenericElement(tinyxml2::XMLElement *xmlElement, std::string subElementName, std::string textIndent)
+{
+    int nStatus = 0;
+
+    tinyxml2::XMLElement *xmlGenericElement = xmlElement->FirstChildElement(subElementName.c_str());
+    if (xmlGenericElement == nullptr)
+    {
+        std::cout << textIndent << subElementName << ": - not defined" << std::endl;
+    }
+    else
+    {
+        std::cout << textIndent << subElementName << ": ";
+        std::string statusAttribute = "";
+
+        // if 'Status' attribute is 'Done'
+        const char *attributeContent = xmlGenericElement->Attribute("Status");
+        if (attributeContent != nullptr)
+        {
+            statusAttribute = attributeContent;
+        }
+
+        if ((statusAttribute.compare("Done") == 0) || (statusAttribute.compare("done") == 0))
+        {
+            std::cout << "Done compare" << std::endl;
+        }
+        else
+        {
+            // if empty
+            std::string elementContent = "";
+            const char *charContent = xmlGenericElement->GetText();
+        if (charContent != nullptr)
+        {
+            elementContent = charContent;
+        }
+            if (elementContent.compare("") == 0)
+            {
+                std::cout << "Missing" << std::endl;
+            }
+            // if contain TODO
+            else if (elementContent.find("TODO") > 0)
+            {
+                std::cout << "Done find" << std::endl;
+            }
+            else
+            {
+                std::cout << "Done (default)" << std::endl;
+            }
+            
+        }
+    }
+    return (nStatus);
+}
+
+int showStoryDesignStatus(tinyxml2::XMLElement *xmlElement)
+{
+    int nStatus = 0;
+
+    tinyxml2::XMLElement *xmlStoryDesign = xmlElement->FirstChildElement("StoryDesign");
+    if (xmlStoryDesign == nullptr)
+    {
+        std::cout << "StoryDesign: - none defined" << std::endl;
+    }
+    else
+    {
+        std::cout << "    StoryDesign" << std::endl;
+        nStatus = showStatusGenericElement(xmlStoryDesign, "Motif", "      ");
+    }
+
+    return (nStatus);
+}
+
 int showSeasonStatus(tinyxml2::XMLElement *xmlElement, std::string basePath)
 {
     int nStatus = 0;
@@ -90,6 +164,29 @@ int showSeasonStatus(tinyxml2::XMLElement *xmlElement, std::string basePath)
     else
     {
         std::cout << " TODO Implement handling season; filename:" << filename << std::endl;
+        tinyxml2::XMLDocument *xmlSeasonDoc = new tinyxml2::XMLDocument();
+        std::string seasonFullpathFilename = basePath + "/" + filename;
+        tinyxml2::XMLError enumValue = xmlSeasonDoc->LoadFile(seasonFullpathFilename.c_str());
+        if (enumValue == tinyxml2::XML_SUCCESS)
+        {
+            tinyxml2::XMLElement *xmlRoot = xmlSeasonDoc->RootElement();
+            if (xmlRoot != nullptr)
+            {
+                // StoryDesign
+                showStoryDesignStatus(xmlRoot);
+                // Pantheon
+                // SeasonPlan
+            }
+            else
+            {
+                std::cerr << "!!! root XML element not found: " << seasonFullpathFilename << std::endl;
+            }
+        }
+        else
+        {
+            std::cout << "!!! failing loading: " << seasonFullpathFilename << std::endl;
+            xmlSeasonDoc->PrintError();
+        }
     }
 
     return (nStatus);
