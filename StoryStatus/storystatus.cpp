@@ -100,10 +100,10 @@ int showStatusGenericElement(tinyxml2::XMLElement *xmlElement, std::string subEl
             // if empty
             std::string elementContent = "";
             const char *charContent = xmlGenericElement->GetText();
-        if (charContent != nullptr)
-        {
-            elementContent = charContent;
-        }
+            if (charContent != nullptr)
+            {
+                elementContent = charContent;
+            }
             if (elementContent.compare("") == 0)
             {
                 std::cout << "Missing" << std::endl;
@@ -111,13 +111,12 @@ int showStatusGenericElement(tinyxml2::XMLElement *xmlElement, std::string subEl
             // if contain TODO
             else if (elementContent.find("TODO") > 0)
             {
-                std::cout << "Done find" << std::endl;
+                std::cout << "Done (with find)" << std::endl;
             }
             else
             {
                 std::cout << "Done (default)" << std::endl;
             }
-            
         }
     }
     return (nStatus);
@@ -136,6 +135,60 @@ int showStoryDesignStatus(tinyxml2::XMLElement *xmlElement)
     {
         std::cout << "    StoryDesign" << std::endl;
         nStatus = showStatusGenericElement(xmlStoryDesign, "Motif", "      ");
+        // TODO Possibly these are in the Pantheon?
+        nStatus = showStatusGenericElement(xmlStoryDesign, "Characters", "      ");
+        nStatus = showStatusGenericElement(xmlStoryDesign, "Antagonists", "      ");
+
+        tinyxml2::XMLElement *xmlPremise = xmlStoryDesign->FirstChildElement("Premise");
+        if (xmlPremise == nullptr)
+        {
+            std::cout << "Premise: - none defined" << std::endl;
+        }
+        else
+        {
+            std::cout << "      Premise" << std::endl;
+            nStatus = showStatusGenericElement(xmlStoryDesign, "Premise", "        ");
+            nStatus = showStatusGenericElement(xmlPremise, "EndResult", "        ");
+        }
+
+        tinyxml2::XMLElement *xmlCentralIssue = xmlStoryDesign->FirstChildElement("CentralIssue");
+        if (xmlCentralIssue == nullptr)
+        {
+            std::cout << "CentralIssue: - none defined" << std::endl;
+        }
+        else
+        {
+            std::cout << "      CentralIssue" << std::endl;
+            nStatus = showStatusGenericElement(xmlStoryDesign, "CentralIssue", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatIsTheCentralQuestionIWantToExplore", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "HowDoIWantTheAudienceToRespondToTheStory", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatDoesTheHeroineWant", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatDoesTheHeroineExpectToAchieve", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatHappensIfTheHeroineFails", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatHappensIfTheHeroineSucceed", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatIsTheHeroineQuestingAfter", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatDoesTheHeroineNeed", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatDoesTheAntagonistWant", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatDoesTheAntagonistExpectToAchieve", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatHappensIfTheAntagonistFails", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatHappensIfTheAntagonistSucceed", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatDoesTheAntagonistNeed", "        ");
+            nStatus = showStatusGenericElement(xmlCentralIssue, "WhatIsTheConflict", "        ");
+        }
+        tinyxml2::XMLElement *xmlStoryProfile = xmlStoryDesign->FirstChildElement("StoryProfile");
+        if (xmlStoryProfile == nullptr)
+        {
+            std::cout << "StoryProfile: - none defined" << std::endl;
+        }
+        else
+        {
+            std::cout << "      StoryProfile" << std::endl;
+            nStatus = showStatusGenericElement(xmlStoryDesign, "StoryProfile", "        ");
+            nStatus = showStatusGenericElement(xmlStoryProfile, "Mood", "        ");
+            nStatus = showStatusGenericElement(xmlStoryProfile, "Tone", "        ");
+            nStatus = showStatusGenericElement(xmlStoryProfile, "Theme", "        ");
+            nStatus = showStatusGenericElement(xmlStoryProfile, "LogLine", "        ");
+        }
     }
 
     return (nStatus);
