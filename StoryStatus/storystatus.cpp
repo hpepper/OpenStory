@@ -21,6 +21,27 @@
 
 #include <filesystem> // path
 
+std::string f_fileBasePath = "";
+
+std::string getStringAttributeOfElement(tinyxml2::XMLElement *xmlElement, std::string attributeName, std::string defaultValue = "")
+{
+    std::string returnString = defaultValue;
+
+    //std::cout << "DDD getStringAttributeOfElement(): " << attributeName << std::endl;
+
+    if (xmlElement != nullptr)
+    {
+        const char *readAttributeValue = xmlElement->Attribute(attributeName.c_str());
+        if (readAttributeValue != nullptr)
+        {
+            //std::cout << "DDD Attribute Value: " << readAttributeValue << std::endl;
+            returnString = readAttributeValue;
+        }
+    }
+
+    return (returnString);
+}
+
 /**
  * List all the attributes that the given element has.
  */
@@ -31,6 +52,8 @@ void listAllAttributes(tinyxml2::XMLElement *xmlElement)
     while (pAttrib)
     {
         std::cout << "DDD attibute: " << pAttrib->Name() << "  value: " << pAttrib->Value() << std::endl;
+        std::string attributeName = pAttrib->Name();
+        std::cout << "DDD get it: " << getStringAttributeOfElement(xmlElement, attributeName) << std::endl;
         pAttrib = pAttrib->Next();
     }
 }
@@ -74,6 +97,7 @@ int showStatusGenericElement(tinyxml2::XMLElement *xmlElement, std::string subEl
 {
     int nStatus = 0;
 
+    //std::cout << "DDD showStatusGenericElement(" << subElementName << ")" << std::endl;
     tinyxml2::XMLElement *xmlGenericElement = xmlElement->FirstChildElement(subElementName.c_str());
     if (xmlGenericElement == nullptr)
     {
@@ -93,7 +117,7 @@ int showStatusGenericElement(tinyxml2::XMLElement *xmlElement, std::string subEl
 
         if ((statusAttribute.compare("Done") == 0) || (statusAttribute.compare("done") == 0))
         {
-            std::cout << "Done compare" << std::endl;
+            std::cout << "Done compare";
         }
         else
         {
@@ -104,20 +128,22 @@ int showStatusGenericElement(tinyxml2::XMLElement *xmlElement, std::string subEl
             {
                 elementContent = charContent;
             }
+
             if (elementContent.compare("") == 0)
             {
-                std::cout << "Missing" << std::endl;
+                std::cout << "Missing";
             }
             // if contain TODO
-            else if (elementContent.find("TODO") > 0)
+            else if (elementContent.find("TODO") != std::string::npos)
             {
-                std::cout << "Done (with find)" << std::endl;
+                std::cout << "Done (with find)";
             }
             else
             {
-                std::cout << "Done (default)" << std::endl;
+                std::cout << "Done (default)";
             }
         }
+        std::cout << std::endl;
     }
     return (nStatus);
 }
@@ -194,6 +220,189 @@ int showStoryDesignStatus(tinyxml2::XMLElement *xmlElement)
     return (nStatus);
 }
 
+std::string getStringContentOfNamedSubElement(tinyxml2::XMLElement *xmlElement, std::string subElementName, std::string defaultValue = "")
+{
+    std::string returnString = defaultValue;
+
+    if (xmlElement != nullptr)
+    {
+        tinyxml2::XMLElement *xmlSubElement = xmlElement->FirstChildElement(subElementName.c_str());
+        if (xmlSubElement != nullptr)
+        {
+            const char *readElementContent = xmlSubElement->GetText();
+            if (readElementContent != nullptr)
+            {
+                returnString = readElementContent;
+            }
+        }
+    }
+
+    return (returnString);
+}
+
+tinyxml2::XMLElement *getRootElementOfXmlFile(std::string filename)
+{
+    tinyxml2::XMLElement *xmlReturnElementPointer = nullptr;
+
+    tinyxml2::XMLDocument *xmlSeasonDoc = new tinyxml2::XMLDocument();
+    tinyxml2::XMLError enumValue = xmlSeasonDoc->LoadFile(filename.c_str());
+    if (enumValue == tinyxml2::XML_SUCCESS)
+    {
+        tinyxml2::XMLElement *xmlRoot = xmlSeasonDoc->RootElement();
+        if (xmlRoot != nullptr)
+        {
+            xmlReturnElementPointer = xmlRoot;
+        }
+        else
+        {
+            std::cerr << "!!! root XML element not found: " << filename << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "!!! failing loading: " << filename << std::endl;
+        xmlSeasonDoc->PrintError();
+    }
+    return (xmlReturnElementPointer);
+}
+
+int showSceneListStatus(tinyxml2::XMLElement *xmlEncounter)
+{
+    int nStatus = 0;
+
+    std::string textIndent = "            ";
+
+    // itterate through the scenes
+    tinyxml2::XMLElement *xmlScene = xmlEncounter->FirstChildElement("Scene");
+    while (xmlScene != nullptr)
+    {
+        std::cout << "          Scene: ";
+        // get id attr
+        std::string identifier = getStringAttributeOfElement(xmlScene, "Id");
+        // get filename attr
+        std::string encounterName = getStringAttributeOfElement(xmlScene, "Name");
+        std::cout << identifier << " - " << encounterName << std::endl;
+
+        nStatus = showStatusGenericElement(xmlScene, "BehindTheScene", textIndent);
+        std::cout << textIndent << "Site: ";
+        tinyxml2::XMLElement *xmlSite = xmlScene->FirstChildElement("Site");
+        if (xmlSite != nullptr)
+        {
+            std::string siteName = getStringAttributeOfElement(xmlScene, "Name");
+            if (siteName.length() > 0)
+            {
+                std::cout << "Done";
+            }
+            else
+            {
+                std::cout << "Missing";
+            }
+        }
+        else
+        {
+            std::cout << "Missing";
+        }
+        std::cout << std::endl;
+
+        int nNumberOfActors = 0;
+        // itterate through the scenes
+        tinyxml2::XMLElement *xmlActor = xmlScene->FirstChildElement("Actor");
+        while (xmlActor != nullptr)
+        {
+            nNumberOfActors++;
+            std::string actorName = getStringAttributeOfElement(xmlActor, "Name");
+            std::string actorFilename = getStringAttributeOfElement(xmlActor, "File");
+            std::string actorNumberOfUnits = getStringAttributeOfElement(xmlActor, "Units");
+            std::cout << "            Actor: " << actorName << " (" << actorNumberOfUnits << ")";
+            if ((actorName.length() == 0) || (actorFilename.length() == 0) || (actorNumberOfUnits.length() == 0))
+            {
+                std::cout << " Missing";
+            }
+            std::cout << std::endl;
+            xmlActor = xmlActor->NextSiblingElement("Actor");
+        }
+        if (nNumberOfActors == 0)
+        {
+            std::cout << "            Actor: Missing" << std::endl;
+        }
+
+        nStatus = showStatusGenericElement(xmlScene, "TellItToThemStraight", textIndent);
+        nStatus = showStatusGenericElement(xmlScene, "Debugging", textIndent);
+        nStatus = showStatusGenericElement(xmlScene, "Temperature", textIndent);
+        nStatus = showStatusGenericElement(xmlScene, "TimeOfDay", textIndent);
+        nStatus = showStatusGenericElement(xmlScene, "SoundTrack", textIndent);
+        nStatus = showStatusGenericElement(xmlScene, "SnatchOfDialog", textIndent);
+        xmlScene = xmlScene->NextSiblingElement();
+    }
+
+    return (nStatus);
+}
+int showSessionStatus(tinyxml2::XMLElement *xmlElement)
+{
+    int nStatus = 0;
+
+    nStatus = showStatusGenericElement(xmlElement, "Prologue", "        ");
+    nStatus = showStatusGenericElement(xmlElement, "CrawlText", "        ");
+
+    // itterate through the encounters
+    tinyxml2::XMLElement *xmlEncounter = xmlElement->FirstChildElement("Encounter");
+    while (xmlEncounter != nullptr)
+    {
+        //listAllAttributes(xmlSession);
+        std::cout << "        Encounter: ";
+        // get id attr
+        std::string identifier = getStringAttributeOfElement(xmlEncounter, "Id");
+        // get filename attr
+        std::string encounterName = getStringAttributeOfElement(xmlEncounter, "Name");
+        std::cout << identifier << " - " << encounterName << std::endl;
+        showSceneListStatus(xmlEncounter);
+        xmlEncounter = xmlEncounter->NextSiblingElement();
+    }
+
+    return (nStatus);
+}
+
+int showSeasonPlanStatus(tinyxml2::XMLElement *xmlElement)
+{
+    int nStatus = 0;
+
+    tinyxml2::XMLElement *xmlSeasonPlan = xmlElement->FirstChildElement("SeasonPlan");
+    if (xmlSeasonPlan == nullptr)
+    {
+        std::cout << "SeasonPlan: - none defined" << std::endl;
+    }
+    else
+    {
+        std::cout << "    SeasonPlan: " << std::endl;
+        // itterate through the sessions
+        tinyxml2::XMLElement *xmlSession = xmlSeasonPlan->FirstChildElement("Session");
+        while (xmlSession != nullptr)
+        {
+            //listAllAttributes(xmlSession);
+            std::cout << "      Session: ";
+            // get id attr
+            std::string identifier = getStringAttributeOfElement(xmlSession, "Id");
+            // get filename attr
+            std::string filename = getStringAttributeOfElement(xmlSession, "Filename");
+            // get note
+            std::string sessionNote = getStringContentOfNamedSubElement(xmlSession, "Note");
+            std::cout << identifier << " - " << sessionNote << std::endl;
+            xmlSession = xmlSession->NextSiblingElement();
+
+            if (filename.length() > 0)
+            {
+                std::cout << "      DDD Filename: " << filename << "  base path: " << f_fileBasePath << std::endl;
+                tinyxml2::XMLElement *xmlSessionXmlFileElement = getRootElementOfXmlFile(f_fileBasePath + "/" + filename);
+                if (xmlSessionXmlFileElement != nullptr)
+                {
+                    showSessionStatus(xmlSessionXmlFileElement);
+                }
+            }
+        }
+    }
+    return (nStatus);
+}
+
 int showSeasonStatus(tinyxml2::XMLElement *xmlElement, std::string basePath)
 {
     int nStatus = 0;
@@ -227,8 +436,9 @@ int showSeasonStatus(tinyxml2::XMLElement *xmlElement, std::string basePath)
             {
                 // StoryDesign
                 showStoryDesignStatus(xmlRoot);
-                // Pantheon
+                // TODO Pantheon (should this go into the bible? or is this the pantheon, for only this season. and if a character will be used in later season, only then will it go into the bible?)
                 // SeasonPlan
+                showSeasonPlanStatus(xmlRoot);
             }
             else
             {
@@ -316,6 +526,7 @@ int main(int argc, char *argv[])
         tinyxml2::XMLElement *xmlRoot = xmlDoc->RootElement();
         if (xmlRoot != nullptr)
         {
+            f_fileBasePath = directoryPathToSeriesFile; // todo make the 'directoryPathToSeriesFile' var the gloabl one
             showSeriesStatus(xmlRoot, directoryPathToSeriesFile);
         }
         else
