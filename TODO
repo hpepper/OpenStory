@@ -1,3 +1,7 @@
+Support generating the Plotplan, instead of getting status.
+Generate status for PlotPlan
+Support support generating plotplan, with existing plotplan data merged in.
+
 Start QT project
 Also support cli
 

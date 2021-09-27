@@ -1,0 +1,365 @@
+
+<!-- Character sheets: -->
+<Reference></Reference>
+
+
+
+<!-- Since this is tea-time-tales perhaps one season is like an
+ordinary story, the 10-minute movie:
+  Exposition/Teaser - Hook the reader[Ray98,85]/[Bel04,24].
+  Opening - Leads the main character to a conflict[Tho02,26]/Central question that you'll be exploring throughout the story.
+  Incident/Disturbance - Begins the plot/Tell us what the story is.
+  Rising/Doorway-1 - This is the event that pushes the Lead from the comfortable daily life, into a new territory.
+  Complication - Whatever the problem is, the Hero will attempt to solve it by the EASIEST and most RATIONAL method possible. This beat is about proving the problem can’t be solved by a simple logical method, and is a kind of set up for the complications and obstacles to come.
+  Trouble - It’s sort of an “I’m mad as hell and I’m not going to take it any more” transition[War11].
+  Climax - What is the worst possible thing that can happen to my hero?” and MAKING THAT HAPPEN in this section[War11]
+  Falling - The Lead faces the ultimate emotional challenge. When all seems lost[War11]. This is when the Lead says: "Enough! I can't stand this anymore. I need to resolve this problem."[Kea98,84]
+  Prepare - Presents the Answer to the Dramatic Question[War11]. (Posed in: Rising)
+  Resolution/Closure - Ends the conflict. Leaves the reader satisfied/Resolution to the problem starts.Write what the resolution is/[Ray98,88]/[Bel04,25].
+  End-credits -
+  TODO V try to do that with the Season plan below.
+
+  Backstory:
+-->
+<StoryDesign>
+  <Motif></Motif>
+  <Characters></Characters>
+  <Antagonists></Antagonists>
+  <!-- has this the makings of a story that could change your life. -->
+  <Premise>
+    <EndResult></EndResult>
+    <SomethingThatMayChangeYourLife></SomethingThatMayChangeYourLife>
+    <!-- STEP - 2 - List/look at what is possible in the premise, p20
+      Explore your options.
+      The intent here is to brainstorm the many different paths the idea can take
+       and then to choose the best one.
+      Some ideas generate certain expectations, things that must happen to
+       satisfy the audience if this idea were to play out in a full story.
+      Ask yourself, "What if ... ?"
+      What is allowed in the story world and what is not.
+      Don't censor or judge yourself.
+      What if the crime just keeps getting bigger?
+    -->
+    <WhatIsPossible></WhatIsPossible>
+
+    <!-- Step - 3 - Describe as many of the story challenges and problems that
+        are unique to your idea as you can think of. p22
+      There are rules of construction that apply to all stories.
+      But each story has its own unique set of rules, or challenges, as well.
+    -->
+    <StoryChallenges>
+    </StoryChallenges>
+  
+  
+    <!-- Step - 4 - Your overall story strategy, stated in one line,
+       is the designing principle of your story. p24
+      The designing principle helps you extend the premis into deep structure.
+  
+      Design principles are fundamental pieces of advice for you to remember
+       what the intent with the story is. 
+  
+      By having this the design principle available it can be references 
+        every time you need to make decissions about your story.
+  
+    -->
+    <DesigningPrinciple>
+    </DesigningPrinciple>
+  
+    <!--
+      Determine the best character in the idea and make that character 
+      the heroine of your premise
+    -->
+    <DetermineYouBestCharacterInTheIdea>
+    </DetermineYouBestCharacterInTheIdea>
+  
+  
+    <!--
+        Who fights whom over what(tru07,p29)
+         Who is my heroine fighting and what is the fight about? p29
+    -->
+    <GetASenseOfTheCentralConflict>
+    </GetASenseOfTheCentralConflict>
+      <!-- p30
+      There should be one action that is most important, 
+       that unifies every other action the heroine takes.
+       That action is the cause-and-effect path.
+  
+      If you are developing a premise with many main characters, each story line
+       must have a single cause-and-effect-path.
+      And all the story lines should come together to form a larger,
+       all-encompassing spine.
+    -->
+    <GetASenseOfTheSingleCauseAndEffectPathway>
+      <OneLiner>
+      </OneLiner>
+    </GetASenseOfTheSingleCauseAndEffectPathway>
+    <!-- Step - 8 - Determine your hero's possible character change, p31
+    Character change is what your hero experiences by going through the struggle.
+
+    The change can be either positive or negative.
+    How does the act of struggling to do the basic action lead the character overcome the weakness and get to the change.
+    A character with certain weaknesses, when being put through the wringer of a particular struggle,
+    is forged and tempered into a changed being.
+
+    The basic action should be the one action best able to force the character to deal with the weakness and change.
+
+    Write down a number of possible optional for the heroine's weaknesses and change.
+
+    The weakness should be both psychological and moral.
+  -->
+    <HeroesPossibleCharacterChange>
+      <Weakness>
+      </Weakness>
+      <ChangedTo></ChangedTo>
+      <ActionThatCatalysesTheChange></ActionThatCatalysesTheChange>
+    </HeroesPossibleCharacterChange>
+
+
+    <!-- Step 9 - Figure out the hero's possible moral choice, p34
+
+    make sure that it is a difficult but plausible choice
+
+    The central theme of a story is often crystallized by a moral choice the hero must make,
+     typically near the end of the story.
+     Theme is your view of the proper way to act in the world.
+     It is your moral vision, and it is one of the main reasons you are writing your story.
+     Theme is best expressed through the structure of the story, through what I call the moral argument.
+     This is where you, the author, make a case for how to live,
+       not through philosophical argument,
+       but through the actions of characters going after a goal.
+    Probably the most important step in that argument is the final moral choice you give your heroine.
+
+    To be a true choice, your heroine must either:
+      select one of two positive outcomes
+      or, avoid one of two negative outcomes.
+
+      Make the optionas as equal as possible, with one seeming only slightly better than the other.
+
+     -->
+    <PossibleMoralChoises>
+    </PossibleMoralChoises>
+    <!-- Step - 10 - Gauge the audience appeal, p35
+    Ask yourself: Is this single story line unique enough to interest a lot of people besides me?
+
+    Always try to write something that you care about and also think will appeal to an audience.
+  -->
+    <GaugeTheAudienceAppeal></GaugeTheAudienceAppeal><!-- p35 -->
+
+    <SelfRevelation></SelfRevelation>
+  </Premise>
+
+  <CentralIssue>
+   <!-- it is probably a good idea to go for the cardinal question. -->
+   <WhatIsTheCentralQuestionIWantToExplore>
+   </WhatIsTheCentralQuestionIWantToExplore>
+
+   <!-- -->
+   <HowDoIWantTheAudienceToRespondToTheStory>
+   </HowDoIWantTheAudienceToRespondToTheStory>
+
+   <!-- This is what the person believes what will make their life good or at least better. -->
+   <WhatDoesTheHeroineWant></WhatDoesTheHeroineWant>
+
+   <!-- -->
+   <WhatDoesTheHeroineExpectToAchieve>
+   </WhatDoesTheHeroineExpectToAchieve>
+
+   <!-- -->
+   <WhatHappensIfTheHeroineFails>
+   </WhatHappensIfTheHeroineFails>
+
+   <!-- -->
+   <WhatHappensIfTheHeroineSucceed></WhatHappensIfTheHeroineSucceed>
+
+   <!-- -->
+   <WhatIsTheHeroineQuestingAfter>
+   </WhatIsTheHeroineQuestingAfter>
+
+   <!-- This is what realy would make the persons life better. -->
+   <WhatDoesTheHeroineNeed>
+   </WhatDoesTheHeroineNeed>
+
+   <!-- This is what the person believes what will make their life good or at least better. -->
+   <WhatDoesTheAntagonistWant>
+   </WhatDoesTheAntagonistWant>
+
+   <!-- -->
+   <WhatDoesTheAntagonistExpectToAchieve>
+   </WhatDoesTheAntagonistExpectToAchieve>
+
+   <!-- -->
+   <WhatHappensIfTheAntagonistFails>
+   </WhatHappensIfTheAntagonistFails>
+
+   <!-- -->
+   <WhatHappensIfTheAntagonistSucceed>
+   </WhatHappensIfTheAntagonistSucceed>
+
+   <!-- This is what realy would make the persons life better. -->
+   <WhatDoesTheAntagonistNeed>
+   </WhatDoesTheAntagonistNeed>
+
+   <!-- -->
+   <WhatIsTheConflict>
+   </WhatIsTheConflict>
+  </CentralIssue>
+
+  <StoryProfile>
+    <Mood></Mood>
+    <Tone></Tone>
+    <Theme></Theme>
+    <LogLine></LogLine>
+  </StoryProfile>
+
+  <!--TODO who are the flip characters? -->
+
+    <!-- The seven key steps of story structure p39 - Det her er minimum steps i en historie/afsnit
+    A story has a minimum of seven steps in its growth from beginning to end:
+    1. Weakness and need
+    2. Desire/Want
+    3. Opponent
+    4. plan
+    5. battle
+    6. self-revelation
+    7. New equilibrium
+    -->
+</StoryDesign>
+
+<TenMinutteMovie>
+  <!-- Introduce the Setting, Lead and hook the audience, give background information. -->
+  <!--  A link to the Climax scene, that audience wont make sense until the Climax scene unfolds. -->
+  <Exposition></Exposition>
+  <!-- Leads the main character to a conflict. /Central question that you'll be exploring throughout the story. -->
+  <Opening></Opening> <!-- maybe PCs starts getting info on who owns things, maybe pcs will start to investigate that at some point. -->
+  <!-- Begins the plot/Tell us what the story is. "Why is today different than any other day?"[War11] -->
+  <Incident></Incident>
+  <!-- This is the event that pushes the Lead from the comfortable daily life, into a new territory. -->
+  <TurningPoint></TurningPoint>
+  <!-- This beat is about proving the problem can’t be solved by a simple logical method, and is a kind of set up for the complications and obstacles to come. -->
+  <Complication></Complication>
+  <!-- no12- Plot:(14)Apparent defeat -->
+  <Trouble></Trouble>
+  <!-- The Lead faces the ultimate emotional challenge. When all seems lost[War11]. -->
+  <AllSeemsLost></AllSeemsLost>
+  <!-- -->
+  <Prepare></Prepare>
+  <!-- Ends the conflict. Leaves the reader satisfied/Resolution to the problem starts. -->
+  <ResolutionEducation></ResolutionEducation>
+  <!-- -->
+  <EndCredits></EndCredits>
+</TenMinutteMovie>
+
+<CharacterWeb>
+  <Character PlotSubject="" Type="" Name="">
+    <Wants></Wants> <!-- Truby calls this desire. -->
+    <PsychologicalNeeds></PsychologicalNeeds>
+    <MoralNeeds></MoralNeeds>
+    <Weakness></Weakness>
+    <Problem></Problem>
+    <SelfRevelation>
+      <LearnAtTheEnd></LearnAtTheEnd>
+      <KnowInTheBeginning></KnowInTheBeginning>
+      <BeliefInTheBeginning></BeliefInTheBeginning>
+      <WrongAboutInTheBeginning></WrongAboutInTheBeginning>
+    </SelfRevelation>
+    <EnergySource></EnergySource>
+    <DefaultDramaRole></DefaultDramaRole>
+    <KardinalValue></KardinalValue>
+    <SelfRevelation></SelfRevelation>
+    <InitialError></InitialError>
+    <GhostScene SceneSubject="">
+    </GhostScene>
+    <DesireLine Order="1">
+      <Desire></Desire>
+      <Plan></Plan>
+    </DesireLine>
+    <DesireLine Order="2">
+      <Desire></Desire>
+      <Plan></Plan>
+    </DesireLine>
+    <DesireLine Order="3">
+      <Desire></Desire>
+      <Plan></Plan>
+    </DesireLine>
+    <DesireLine Order="4">
+      <Desire></Desire>
+      <Plan></Plan>
+    </DesireLine>
+    <DesireLine Order="5">
+      <Desire></Desire>
+      <Plan></Plan>
+    </DesireLine>
+    <DesireLine Order="6">
+      <Desire></Desire>
+      <Plan></Plan>
+    </DesireLine>
+  </Character>
+</CharacterWeb>
+
+<Pantheon>
+  <!-- What weakness does each character have that they need to overcome? -->
+  <Character Name="" Type=""></Character>
+</Pantheon>
+
+<SeasonPlan>
+  <Session Id="1">
+    <Primary></Primary>
+    <Secondary></Secondary>
+    <Note></Note>
+  </Session>
+  <Session Id="2">
+    <Primary></Primary>
+    <Secondary></Secondary>
+    <Note></Note>
+  </Session>
+  <PlanningNotes>
+  </PlanningNotes>
+</SeasonPlan>
+
+<!--
+  Seven Key
+
+  1. Weakness and need
+  2. Desire
+  3. Opponent
+  4. Plan
+  5. Battle
+  6. Self-revelation
+  7. New equlibrium
+
+-->
+
+<!--
+
+-->
+<PlotDiagram>
+  <Act Number="1">
+    <!-- Exposition -->
+    <Sequence Number="" Name="">
+      <Weakness></Weakness>
+      <Need></Need>
+      <Desire></Desire>
+      <Opponent></Opponent>
+      <Plan></Plan>
+      <Battle></Battle>
+      <SelfRevelation></SelfRevelation>
+      <NewEquilibrium></NewEquilibrium>
+      <Scene Id="" Name="" Act="" Session="">
+        <Time></Time>
+        <Intensity></Intensity>
+        <Location></Location>
+        <Storyline></Storyline>
+        <CentralIssue></CentralIssue>
+        <ScenePurpose></ScenePurpose>
+        <Character Name="" Units=""/>
+        <Synopsis></Synopsis>
+        <SnatchOfDialog></SnatchOfDialog>
+        <SceneConnections></SceneConnections>
+        <TellItStraight></TellItStraight>
+        <Hooks></Hooks>
+        <Behind></Behind>
+        <Debugging></Debugging>
+      </Scene>
+    </Sequence>
+  </Act>
+</PlotDiagram>

@@ -10,8 +10,9 @@ tmp
 .map
 *.qhc
 *.qch
-
+*.ods
 
 # I think this is the local thing
 StoryTeller.pro.user*
 
+build-StoryTeller-Desktop-Debug/
