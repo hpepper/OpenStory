@@ -1,0 +1,23 @@
+
+<!DOCTYPE ADVENTURE SYSTEM "story.dtd">
+<SEASON Version="0.1.0">
+<PlayerCharacters>
+  <Character Name="Rigger" SheetFile=""/>
+  <Character Name="Sammurai" SheetFile=""/>
+</PlayerCharacters>
+<SeasonPlan>
+  <Session Id="1">
+    <Primary></Primary>
+    <Secondary></Secondary>
+    <Note></Note>
+  </Session>
+  <Session Id="2">
+    <Primary></Primary>
+    <Secondary></Secondary>
+    <Note></Note>
+  </Session>
+  <PlanningNotes>
+  </PlanningNotes>
+</SeasonPlan>
+
+</SEASON>

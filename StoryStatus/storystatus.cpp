@@ -24,22 +24,24 @@
 
 #include <map> // list
 
-#include <math.h>  // ceil
+#include <math.h> // ceil
 
 std::string f_fileBasePath = "";
 
 std::string versionText = "0.1.3";
 
+tinyxml2::XMLDocument *f_xmlDoc = nullptr;
+
 std::map<std::string, bool> f_mapCharacterDefinitions;
 
 std::vector<std::string> listOfPlayers = {"Player1", "Player2"};
 
-int numberOfPlayers = listOfPlayers.size();
-int totalNumberOfScenes = 40;
+int f_numberOfPlayers = listOfPlayers.size();
+int f_totalNumberOfScenes = 40;
 int f_scenesPerSession = 3;
 
 // Ceil; always round up
-int numberOfSessions = ceil(( 1.0 * totalNumberOfScenes) / f_scenesPerSession);
+int f_numberOfSessions = ceil((1.0 * f_totalNumberOfScenes) / f_scenesPerSession);
 
 // From Day 11 - Plot diagram
 std::map<int, std::string> f_mapScenePurpose = {
@@ -82,8 +84,7 @@ std::map<int, std::string> f_mapScenePurpose = {
     {37, "BigYes - (17)Third revelation and decision. The main character, having embraced the positive thematic argument, makes a commitment to change. This sets up the resolution to the Private Conflict."},
     {38, "No - The main character meets with failure, but instead of licking their wounds, the main character presses on"},
     {39, "BigNo - (18)Gate, Gauntlet, visit to death - Finally the main character must; either; pass through a narrow gate or; travel down a long gauntlet"},
-    {40, "FinalYes"}
-    };
+    {40, "FinalYes"}};
 
 /// This lists the key scene names and maps the scene numbers to the KeyScene names.
 std::map<int, std::string> f_mapKeySceneNumberssToSceneName = {
@@ -110,6 +111,71 @@ std::map<std::string, std::string> f_mapKeySceneNameToDescription = {
     {"ResolutionEducation", ""}};
 
 int f_currentActNumber = 0;
+
+bool f_numberOfSessionsHasBeenModified = false;
+
+void adjustTheNumberOfSessions()
+{
+    if (!f_numberOfSessionsHasBeenModified)
+    {
+        if (f_numberOfSessions > int(f_totalNumberOfScenes / f_scenesPerSession))
+        {
+            f_numberOfSessions = int(f_totalNumberOfScenes / f_scenesPerSession) + 1;
+        }
+        f_numberOfSessionsHasBeenModified = true;
+    }
+}
+
+void deleteelementIfExists(tinyxml2::XMLElement *xmlElement, std::string elementName)
+{
+    tinyxml2::XMLElement *xmlResultElement = xmlElement->FirstChildElement(elementName.c_str());
+    if (xmlResultElement != nullptr)
+    {
+        xmlElement->DeleteChild(xmlResultElement);
+    }
+}
+
+// These are used to when creating a new PlotPlan, by enabling reading the
+//  old plot plan and enabling add the old info to the new structure.
+std::map<int, tinyxml2::XMLElement *> f_mapSceneIdToXmlElement;
+std::map<int, tinyxml2::XMLElement *> f_mapSequenceIdToXmlElement;
+
+std::map<int, std::string> f_mapPlayerCharacters;
+
+std::string getStringAttributeOfElement(tinyxml2::XMLElement *xmlElement, std::string attributeName, std::string defaultValue = "")
+{
+    std::string returnString = defaultValue;
+
+    if (xmlElement != nullptr)
+    {
+        const char *readAttributeValue = xmlElement->Attribute(attributeName.c_str());
+        if (readAttributeValue != nullptr)
+        {
+            returnString = readAttributeValue;
+        }
+    }
+
+    return (returnString);
+}
+
+int loadPlayerList(tinyxml2::XMLElement *xmlRoot)
+{
+    int nStatus = 0;
+    tinyxml2::XMLElement *xmlHeadingElement = xmlRoot->FirstChildElement("PlayerCharacters");
+    if (xmlHeadingElement != nullptr)
+    {
+        int nIndex = 1;
+        tinyxml2::XMLElement *xmlPlayer = xmlHeadingElement->FirstChildElement("Character");
+        while (xmlPlayer != nullptr)
+        {
+            std::string actorName = getStringAttributeOfElement(xmlPlayer, "Name");
+            f_mapPlayerCharacters[nIndex] = actorName;
+            nIndex++;
+            xmlPlayer = xmlPlayer->NextSiblingElement("Character");
+        }
+    }
+    return (nStatus);
+}
 
 int getActNumberForSceneNumber(int sceneNumber)
 {
@@ -160,17 +226,12 @@ std::string getSceneSeed(int sceneNumber)
     return (sceneSeed);
 }
 
-int generateScene(int sessionNumber, int sceneNumber)
+tinyxml2::XMLElement *generateScene(int sessionNumber, int sceneNumber, tinyxml2::XMLElement *parentElement)
 {
-    /* TODO not sure about act, it seems to mess up the xml tree, and give nothing.
-    if ( f_currentActNumber != getActNumberForSceneNumber(sceneNumber)) {
-        if (f_currentActNumber > 0) {
-            std::cout << "    </Act>" << std::endl;
-        }
-        f_currentActNumber = getActNumberForSceneNumber(sceneNumber);
-        std::cout << "    <Act Number=\""+std::to_string(f_currentActNumber)+"\">" << std::endl;
-    }
-    */
+    // TODO parent must fill out the session structure.
+    //tinyxml2::XMLElement *xmlScene = new tinyxml2::XMLElement();
+    //new off of the parent
+
     int currentActNumber = getActNumberForSceneNumber(sceneNumber);
     // Add entry for the scene purpose
     // Add entry for optional design note for scene if it is the Ricing, Prepare etc.
@@ -201,7 +262,7 @@ int generateScene(int sessionNumber, int sceneNumber)
     std::cout << "        <Behind></Behind>" << std::endl;
     std::cout << "        <Debugging></Debugging>" << std::endl;
     std::cout << "    </Scene>" << std::endl;
-    return (0);
+    return (NULL);
 }
 
 // maybe the return should be the XML thingy
@@ -213,32 +274,23 @@ int generateSession(int nSessionId, std::string primary, std::string secondary)
     int startSceneNumber = (nSessionId - 1) * f_scenesPerSession;
     for (int sceneOffset = 1; sceneOffset <= f_scenesPerSession; sceneOffset++)
     {
-        generateScene(nSessionId, startSceneNumber + sceneOffset);
+        generateScene(nSessionId, startSceneNumber + sceneOffset, NULL);
     }
     std::cout << "  </Session>" << std::endl;
     return (0);
 }
 
-int generatePlotDiagram()
+// TODO change it to return an XML structure
+int generatePlotDiagram(tinyxml2::XMLElement *newXmlPlotDiagram)
 {
-    bool removeLastPlayerFromList = false;
-    // If there are 4 or more players and it is an even number of players, then add an extra 'player' and call it 'story'
-    if (numberOfPlayers % 2 == 0)
-    {
-        listOfPlayers.push_back("story");
-        numberOfPlayers = listOfPlayers.size();
-        removeLastPlayerFromList = true;
-    }
-    if (numberOfSessions > int(totalNumberOfScenes / f_scenesPerSession))
-    {
-        numberOfSessions = int(totalNumberOfScenes / f_scenesPerSession) + 1;
-    }
+
+    adjustTheNumberOfSessions();
     generateStartPlotDiagram();
     generateSession(1, "Story arc", "Resolve Previous Arch");
     int playerIndexCounter = 0;
-    for (int sessionNumber = 2; sessionNumber < numberOfSessions; sessionNumber++)
+    for (int sessionNumber = 2; sessionNumber < f_numberOfSessions; sessionNumber++)
     {
-        int playerIndex = (playerIndexCounter % numberOfPlayers);
+        int playerIndex = (playerIndexCounter % f_numberOfSessions);
         //std::cout << "DDD playerIndex: " << playerIndex << " offset: " << rotationOffsetForPlayIndex << " sessionNumber: " << sessionNumber << std::endl;
         std::string focusPlayerName = listOfPlayers.at(playerIndex);
         if ((sessionNumber % 2) == 0)
@@ -252,29 +304,9 @@ int generatePlotDiagram()
         playerIndexCounter++;
     }
     // TODO last scene(40) is missing
-    generateSession(numberOfSessions, "Conclusion", "Hint to next Arc");
-    if (removeLastPlayerFromList)
-    {
-        listOfPlayers.pop_back();
-        numberOfPlayers = listOfPlayers.size();
-    }
+    generateSession(f_numberOfSessions, "Conclusion", "Hint to next Arc");
+    // TODO replace old
     return (0);
-}
-
-std::string getStringAttributeOfElement(tinyxml2::XMLElement *xmlElement, std::string attributeName, std::string defaultValue = "")
-{
-    std::string returnString = defaultValue;
-
-    if (xmlElement != nullptr)
-    {
-        const char *readAttributeValue = xmlElement->Attribute(attributeName.c_str());
-        if (readAttributeValue != nullptr)
-        {
-            returnString = readAttributeValue;
-        }
-    }
-
-    return (returnString);
 }
 
 /**
@@ -849,6 +881,282 @@ int showPlotDiagram(tinyxml2::XMLElement *xmlElement)
     return (nStatus);
 }
 
+tinyxml2::XMLNode *createStoryBootstrapIfMissing(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createStoryBootstrapIfMissing()" << std::endl;
+    tinyxml2::XMLNode *xmlResultElement = xmlRoot->FirstChildElement("StoryBootstrap");
+    if (xmlResultElement == nullptr)
+    {
+        // https://shilohjames.wordpress.com/2014/04/27/tinyxml2-tutorial/
+        tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("StoryBootstrap");
+        xmlResultElement = xmlRoot->InsertFirstChild(xmlNewElement);
+    }
+    return (xmlResultElement);
+}
+
+tinyxml2::XMLNode *createPlayerCharactersIfMissing(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createPlayerCharactersIfMissing()" << std::endl;
+    tinyxml2::XMLNode *xmlResultElement = xmlRoot->FirstChildElement("PlayerCharacters");
+    if (xmlResultElement == nullptr)
+    {
+        tinyxml2::XMLNode *xmlParentNode = createStoryBootstrapIfMissing(xmlRoot, updateStructure);
+        if (xmlParentNode == nullptr)
+        {
+            std::cout << "!!! createStoryBootstrapIfMissing() returned a nullptr" << std::endl;
+            exit(99);
+        }
+        tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("PlayerCharacters");
+        xmlResultElement = xmlRoot->InsertAfterChild(xmlParentNode, xmlNewElement);
+    }
+
+    return (xmlResultElement);
+}
+
+tinyxml2::XMLNode *createStoryDesignIfMissing(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createStoryDesignIfMissing()" << std::endl;
+    tinyxml2::XMLNode *xmlResultElement = xmlRoot->FirstChildElement("StoryDesign");
+    if (xmlResultElement == nullptr)
+    {
+        tinyxml2::XMLNode *xmlParentNode = createPlayerCharactersIfMissing(xmlRoot, updateStructure);
+        if (xmlParentNode == nullptr)
+        {
+            std::cout << "!!! createStoryBootstrapIfMissing() returned a nullptr" << std::endl;
+            exit(99);
+        }
+        tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("StoryDesign");
+        xmlResultElement = xmlRoot->InsertAfterChild(xmlParentNode, xmlNewElement);
+    }
+
+    return (xmlResultElement);
+}
+
+tinyxml2::XMLNode *createTenMinutteMovieIfMissing(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createTenMinutteMovieIfMissing()" << std::endl;
+    tinyxml2::XMLNode *xmlResultElement = xmlRoot->FirstChildElement("TenMinutteMovie");
+    if (xmlResultElement == nullptr)
+    {
+        tinyxml2::XMLNode *xmlParentNode = createStoryDesignIfMissing(xmlRoot, updateStructure);
+        if (xmlParentNode == nullptr)
+        {
+            std::cout << "!!! createTenMinutteMovieIfMissing() returned a nullptr" << std::endl;
+            exit(99);
+        }
+        tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("TenMinutteMovie");
+        xmlResultElement = xmlRoot->InsertAfterChild(xmlParentNode, xmlNewElement);
+    }
+
+    return (xmlResultElement);
+}
+
+tinyxml2::XMLNode *createPlotPlanIfMissing(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createPlotPlanIfMissing()" << std::endl;
+    tinyxml2::XMLNode *xmlResultElement = xmlRoot->FirstChildElement("PlotPlan");
+    if (xmlResultElement != nullptr)
+    {
+        // TODO delete the existing plotplan
+    }
+
+    tinyxml2::XMLNode *xmlParentNode = createTenMinutteMovieIfMissing(xmlRoot, updateStructure);
+    if (xmlParentNode == nullptr)
+    {
+        std::cout << "!!! createPlotPlanIfMissing() returned a nullptr" << std::endl;
+        exit(99);
+    }
+    tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("PlotPlan");
+    xmlResultElement = xmlRoot->InsertAfterChild(xmlParentNode, xmlNewElement);
+
+    loadPlayerList(xmlRoot);
+
+    return (xmlResultElement);
+}
+
+tinyxml2::XMLNode *createCharacterWebIfMissing(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createCharacterWebIfMissing() - 1" << std::endl;
+    if (xmlRoot == nullptr)
+    {
+        std::cout << "!!! createCharacterWebIfMissing() xmlRoot is a nullptr" << std::endl;
+        exit(99);
+    }
+    tinyxml2::XMLNode *xmlResultElement = xmlRoot->FirstChildElement("CharacterWeb");
+    std::cout << "DDD createCharacterWebIfMissing() - 2" << std::endl;
+    if (xmlResultElement == nullptr)
+    {
+        tinyxml2::XMLNode *xmlParentNode = createPlotPlanIfMissing(xmlRoot, updateStructure);
+        std::cout << "DDD createCharacterWebIfMissing() - 3" << std::endl;
+        if (xmlParentNode == nullptr)
+        {
+            std::cout << "!!! createCharacterWebIfMissing() returned a nullptr" << std::endl;
+            exit(99);
+        }
+        tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("CharacterWeb");
+        std::cout << "DDD createCharacterWebIfMissing() - 4" << std::endl;
+        // TODO V populate this
+        xmlResultElement = xmlRoot->InsertAfterChild(xmlParentNode, xmlNewElement);
+        std::cout << "DDD createCharacterWebIfMissing() - 5" << std::endl;
+    }
+    std::cout << "DDD createCharacterWebIfMissing() - 6" << std::endl;
+
+    return (xmlResultElement);
+}
+
+tinyxml2::XMLNode *createPanthonIfMissing(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createPanthonIfMissing() - 1" << std::endl;
+    tinyxml2::XMLNode *xmlResultElement = xmlRoot->FirstChildElement("Panthon");
+    std::cout << "DDD createPanthonIfMissing() - 2" << std::endl;
+    if (xmlResultElement == nullptr)
+    {
+        tinyxml2::XMLNode *xmlParentNode = createCharacterWebIfMissing(xmlRoot, updateStructure);
+        std::cout << "DDD createPanthonIfMissing() - 3" << std::endl;
+        if (xmlParentNode == nullptr)
+        {
+            std::cout << "!!! createPanthonIfMissing() returned a nullptr" << std::endl;
+            exit(99);
+        }
+        std::cout << "DDD createPanthonIfMissing() - 4" << std::endl;
+        if (f_xmlDoc == nullptr)
+        {
+            std::cout << "!!! createPanthonIfMissing() f_xmlDoc is a nullptr" << std::endl;
+            exit(99);
+        }
+        tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("Panthon");
+        std::cout << "DDD createPanthonIfMissing() - 5" << std::endl;
+        // TODO V populate this
+        xmlResultElement = xmlRoot->InsertAfterChild(xmlParentNode, xmlNewElement);
+        std::cout << "DDD createPanthonIfMissing() - 6" << std::endl;
+    }
+
+    return (xmlResultElement);
+}
+
+void createSessionPlanEntry(tinyxml2::XMLElement *xmlSession, int sessionId, std::string primaryText, std::string secondaryText)
+{
+    xmlSession->SetAttribute("Id", std::to_string(sessionId).c_str());
+    xmlSession->SetAttribute("Filename", "");
+    int playerIndex = ((sessionId - 2) % f_numberOfPlayers);
+    tinyxml2::XMLElement *xmlReuse = xmlSession->InsertNewChildElement("Primary");
+    xmlReuse->SetText(primaryText.c_str());
+    xmlReuse = xmlSession->InsertNewChildElement("Secondary");
+    xmlReuse->SetText(secondaryText.c_str());
+    xmlReuse = xmlSession->InsertNewChildElement("Note");
+}
+
+tinyxml2::XMLNode *createNewSeasonPlanElementAndRequiredStructures(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createNewSeasonPlanElementAndRequiredStructures() - 1" << std::endl;
+    adjustTheNumberOfSessions();
+
+    tinyxml2::XMLNode *xmlResultNode = nullptr;
+    tinyxml2::XMLNode *xmlParentNode = createPanthonIfMissing(xmlRoot, updateStructure);
+    // TODO move some of this out of the if statement
+    if (xmlParentNode == nullptr)
+    {
+        std::cout << "!!! createNewSesonPlanElementAndRequiredStructures() returned a nullptr" << std::endl;
+        exit(99);
+    }
+    tinyxml2::XMLElement *xmlSeasonPlan = f_xmlDoc->NewElement("NewSeasonPlan");
+    // TODO V populate this
+    xmlResultNode = xmlRoot->InsertAfterChild(xmlParentNode, xmlSeasonPlan);
+
+    tinyxml2::XMLElement *xmlResultElement = xmlResultNode->ToElement();
+
+    bool removeLastPlayerFromList = false;
+    // TODO how should this look?
+    // If there are 4 or more players and it is an even number of players, then add an extra 'player' and call it 'story'
+    if (f_numberOfPlayers % 2 == 0)
+    {
+        listOfPlayers.push_back("story");
+        f_numberOfPlayers = listOfPlayers.size();
+        removeLastPlayerFromList = true;
+    }
+
+    // First session
+    tinyxml2::XMLElement *xmlSession = xmlResultElement->InsertNewChildElement("Session");
+    xmlSession->SetAttribute("Id", "1");
+    xmlSession->SetAttribute("Filename", "");
+    tinyxml2::XMLElement *xmlReuse = xmlSession->InsertNewChildElement("Primary");
+    xmlReuse->SetText("Story arc");
+    xmlReuse = xmlSession->InsertNewChildElement("Secondary");
+    xmlReuse->SetText("Resolve Previous Arch");
+    xmlReuse = xmlSession->InsertNewChildElement("Note");
+
+    std::string storyArc = "Story Arc";
+
+    for (int sessionId = 2; sessionId < f_numberOfSessions; sessionId++)
+    {
+        int playerIndex = ((sessionId - 2) % f_numberOfPlayers);
+        std::string playerName = listOfPlayers[playerIndex];
+        xmlSession = xmlResultElement->InsertNewChildElement("Session");
+        if ((sessionId % 2) == 0)
+        {
+            createSessionPlanEntry(xmlSession, sessionId, playerName, storyArc);
+        }
+        else
+        {
+            createSessionPlanEntry(xmlSession, sessionId, storyArc, playerName);
+        }
+    }
+
+    // Last session
+    xmlSession = xmlResultElement->InsertNewChildElement("Session");
+    xmlSession->SetAttribute("Id", std::to_string(f_numberOfSessions).c_str());
+    xmlSession->SetAttribute("Filename", "");
+    xmlReuse = xmlSession->InsertNewChildElement("Primary");
+    xmlReuse->SetText("Conclusion");
+    xmlReuse = xmlSession->InsertNewChildElement("Secondary");
+    xmlReuse->SetText("Hint to next Arc");
+    xmlReuse = xmlSession->InsertNewChildElement("Note");
+
+    if (removeLastPlayerFromList)
+    {
+        listOfPlayers.pop_back();
+        f_numberOfPlayers = listOfPlayers.size();
+    }
+    deleteelementIfExists(xmlRoot, "SeasonPlan");
+    xmlSeasonPlan->SetName("SeasonPlan");
+    return (xmlResultNode);
+}
+
+/**
+ * 
+ * Expected order:
+ *  StoryBootstrap
+ *  StoryDesign
+ *  TenMinutteMovie
+ *  PlotPlan
+ *  CharacterWeb
+ *  Pantheon
+ *  SeasonPlan
+ *  Plotdiagram
+ */
+tinyxml2::XMLNode *createNewPlotDiagramElementAndRequiredStructures(tinyxml2::XMLElement *xmlRoot, bool updateStructure = false)
+{
+    std::cout << "DDD createNewPlotDiagramElementAndRequiredStructures()" << std::endl;
+    tinyxml2::XMLNode *xmlResultElement = xmlRoot->FirstChildElement("NewPlotDiagram");
+    if (xmlResultElement == nullptr)
+    {
+        tinyxml2::XMLNode *xmlParentNode = createNewSeasonPlanElementAndRequiredStructures(xmlRoot, updateStructure);
+        // TODO move some of this out of the if statement
+        if (xmlParentNode == nullptr)
+        {
+            std::cout << "!!! createNewPlotDiagramElementAndRequiredStructures() returned a nullptr" << std::endl;
+            exit(99);
+        }
+        std::cout << "DDD createNewPlotDiagramElementAndRequiredStructures() creating NewPlotDiagram" << std::endl;
+        tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("NewPlotDiagram");
+        // TODO V populate this
+        xmlResultElement = xmlRoot->InsertAfterChild(xmlParentNode, xmlNewElement);
+    }
+    f_xmlDoc->Print();
+
+    return (xmlResultElement);
+}
+
 /** Load the given season file and go through Design status and itterate the season plan.
  * @param std::string Name of season xml file
  * 
@@ -860,14 +1168,18 @@ int showSeasonStatus(std::string filename)
 {
     int nStatus = 0;
 
-    tinyxml2::XMLDocument *xmlSeasonDoc = new tinyxml2::XMLDocument();
+    f_xmlDoc = new tinyxml2::XMLDocument();
     std::string seasonFullpathFilename = f_fileBasePath + "/" + filename;
-    tinyxml2::XMLError enumValue = xmlSeasonDoc->LoadFile(seasonFullpathFilename.c_str());
+    tinyxml2::XMLError enumValue = f_xmlDoc->LoadFile(seasonFullpathFilename.c_str());
     if (enumValue == tinyxml2::XML_SUCCESS)
     {
-        tinyxml2::XMLElement *xmlRoot = xmlSeasonDoc->RootElement();
+        tinyxml2::XMLElement *xmlRoot = f_xmlDoc->RootElement();
         if (xmlRoot != nullptr)
         {
+            createNewPlotDiagramElementAndRequiredStructures(xmlRoot);
+
+            exit(0);
+
             // StoryDesign
             showStoryDesignStatus(xmlRoot);
 
@@ -895,7 +1207,7 @@ int showSeasonStatus(std::string filename)
     else
     {
         std::cout << "!!! failing loading: " << seasonFullpathFilename << std::endl;
-        xmlSeasonDoc->PrintError();
+        f_xmlDoc->PrintError();
     }
 
     return (nStatus);
@@ -987,6 +1299,37 @@ void LoadCharacterDefinitions(tinyxml2::XMLElement *xmlNode)
     }
 }
 
+/**
+ * Load f_mapSequenceIdToXmlElement and f_mapSceneIdToXmlElement
+ */
+void LoadPlotPlan(tinyxml2::XMLElement *xmlRoot)
+{
+    tinyxml2::XMLElement *xmlPlotDiagramElement = xmlRoot->FirstChildElement("PlotDiagram");
+    if (xmlPlotDiagramElement != nullptr)
+    {
+        tinyxml2::XMLElement *xmlSequence = xmlPlotDiagramElement->FirstChildElement("Sequence");
+        while (xmlSequence != nullptr)
+        {
+            std::string sequenceNumber = getStringAttributeOfElement(xmlSequence, "Number");
+            if (sequenceNumber.length() > 0)
+            {
+                f_mapSequenceIdToXmlElement[std::stoi(sequenceNumber)] = xmlSequence;
+            }
+            tinyxml2::XMLElement *xmlScene = xmlPlotDiagramElement->FirstChildElement("Scene");
+            while (xmlScene != nullptr)
+            {
+                std::string sceneId = getStringAttributeOfElement(xmlScene, "Id");
+                if (sceneId.length() > 0)
+                {
+                    f_mapSequenceIdToXmlElement[std::stoi(sceneId)] = xmlScene;
+                }
+                xmlScene = xmlScene->NextSiblingElement("Scene");
+            }
+            xmlSequence = xmlSequence->NextSiblingElement("Sequence");
+        }
+    }
+}
+
 int main(int argc, char *argv[])
 {
     // TODO support both series and session files
@@ -1003,8 +1346,8 @@ int main(int argc, char *argv[])
         {"episodefile", required_argument, nullptr, 'e'},
         {"help", no_argument, nullptr, 'h'},
         {nullptr, no_argument, nullptr, 0}};
-        // TODO support --status (current op method)
-        // TODO support --update will save an updated version of the xml file being read
+    // TODO support --status (current op method)
+    // TODO support --update will save an updated version of the xml file being read
 
     int index;
     int opt = 0;
@@ -1047,21 +1390,23 @@ int main(int argc, char *argv[])
     std::cout << "DDD path: " << f_fileBasePath << std::endl;
     std::cout << "DDD file: " << fileNameXml << std::endl;
 
-    tinyxml2::XMLDocument *xmlDoc = new tinyxml2::XMLDocument();
-    tinyxml2::XMLError enumValue = xmlDoc->LoadFile(pathAndFilenameXml.c_str());
+    tinyxml2::XMLDocument *f_xmlDoc = new tinyxml2::XMLDocument();
+    tinyxml2::XMLError enumValue = f_xmlDoc->LoadFile(pathAndFilenameXml.c_str());
     if (enumValue == tinyxml2::XML_SUCCESS)
     {
-        tinyxml2::XMLElement *xmlRoot = xmlDoc->RootElement();
+        tinyxml2::XMLElement *xmlRoot = f_xmlDoc->RootElement();
         if (xmlRoot != nullptr)
         {
             LoadCharacterDefinitions(xmlRoot);
-
+            LoadPlotPlan(xmlRoot);
 
             if (fileType.compare("series") == 0)
             {
                 // TODO maybe also replace xmlRoot with fileNameXml for consistency.
+                createNewPlotDiagramElementAndRequiredStructures(xmlRoot);
                 showSeriesStatus(xmlRoot);
-                generatePlotDiagram(); // TODO only do this when doing --update
+                // TODO this should really be: createNewPlotDiagramElementAndRequiredStructures
+                generatePlotDiagram(xmlRoot); // TODO only do this when doing --update
             }
             else if (fileType.compare("season") == 0)
             {
@@ -1071,6 +1416,8 @@ int main(int argc, char *argv[])
             {
                 showEpisodeStatus(fileNameXml);
             }
+            // XMLError is an enum
+            tinyxml2::XMLError enumValue = f_xmlDoc->SaveFile("XXX_file.xml");
         }
         else
         {
@@ -1079,7 +1426,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        std::string xmlErrorString = xmlDoc->ErrorStr();
+        std::string xmlErrorString = f_xmlDoc->ErrorStr();
         std::cerr << "!!! XML error in file?: " << xmlErrorString << std::endl;
         //tinyxml2::XMLDocument::PrintError()
     }
