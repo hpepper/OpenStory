@@ -26,6 +26,8 @@
 
 #include <math.h> // ceil
 
+#include <utility> // std::pair
+
 std::string f_fileBasePath = "";
 
 std::string versionText = "0.1.3";
@@ -196,12 +198,6 @@ int getActNumberForSceneNumber(int sceneNumber)
     return (returnActNumber);
 }
 
-int generateStartPlotDiagram()
-{
-    std::cout << "<PlotDiagram>" << std::endl;
-    return (0);
-}
-
 std::string getSceneSeed(int sceneNumber)
 {
     std::string sceneSeed = "";
@@ -277,35 +273,6 @@ int generateSession(int nSessionId, std::string primary, std::string secondary)
         generateScene(nSessionId, startSceneNumber + sceneOffset, NULL);
     }
     std::cout << "  </Session>" << std::endl;
-    return (0);
-}
-
-// TODO change it to return an XML structure
-int generatePlotDiagram(tinyxml2::XMLElement *newXmlPlotDiagram)
-{
-
-    adjustTheNumberOfSessions();
-    generateStartPlotDiagram();
-    generateSession(1, "Story arc", "Resolve Previous Arch");
-    int playerIndexCounter = 0;
-    for (int sessionNumber = 2; sessionNumber < f_numberOfSessions; sessionNumber++)
-    {
-        int playerIndex = (playerIndexCounter % f_numberOfSessions);
-        //std::cout << "DDD playerIndex: " << playerIndex << " offset: " << rotationOffsetForPlayIndex << " sessionNumber: " << sessionNumber << std::endl;
-        std::string focusPlayerName = listOfPlayers.at(playerIndex);
-        if ((sessionNumber % 2) == 0)
-        {
-            generateSession(sessionNumber, focusPlayerName, "Story arc");
-        }
-        else
-        {
-            generateSession(sessionNumber, "Story arc", focusPlayerName);
-        }
-        playerIndexCounter++;
-    }
-    // TODO last scene(40) is missing
-    generateSession(f_numberOfSessions, "Conclusion", "Hint to next Arc");
-    // TODO replace old
     return (0);
 }
 
@@ -1122,6 +1089,12 @@ tinyxml2::XMLNode *createNewSeasonPlanElementAndRequiredStructures(tinyxml2::XML
     return (xmlResultNode);
 }
 
+std::pair<std::string, std::string> getPrimaryAndSecondaryForSessionId(tinyxml2::XMLElement *xmlElement, int sessionId)
+{
+    std::pair<std::string, std::string> returnPair("pair", "odd");
+    return (returnPair);
+}
+
 /**
  * 
  * Expected order:
@@ -1151,8 +1124,31 @@ tinyxml2::XMLNode *createNewPlotDiagramElementAndRequiredStructures(tinyxml2::XM
         tinyxml2::XMLElement *xmlNewElement = f_xmlDoc->NewElement("NewPlotDiagram");
         // TODO V populate this
         xmlResultElement = xmlRoot->InsertAfterChild(xmlParentNode, xmlNewElement);
+
+        adjustTheNumberOfSessions();
+        generateSession(1, "Story arc", "Resolve Previous Arch");
+        int playerIndexCounter = 0;
+        for (int sessionNumber = 2; sessionNumber < f_numberOfSessions; sessionNumber++)
+        {
+            int playerIndex = (playerIndexCounter % f_numberOfPlayers);
+            // std::cout << "DDD playerIndex: " << playerIndex << " sessionNumber: " << sessionNumber << std::endl;
+            std::string focusPlayerName = listOfPlayers.at(playerIndex);
+            if ((sessionNumber % 2) == 0)
+            {
+                generateSession(sessionNumber, focusPlayerName, "Story arc");
+            }
+            else
+            {
+                generateSession(sessionNumber, "Story arc", focusPlayerName);
+            }
+            playerIndexCounter++;
+        }
+        // last scene(40) is missing
+        generateSession(f_numberOfSessions, "Conclusion", "Hint to next Arc");
+        // TODO replace old structure
     }
     f_xmlDoc->Print();
+    std::cout << "DDD f_xmlDoc->Print() done" << std::endl;
 
     return (xmlResultElement);
 }
@@ -1164,7 +1160,7 @@ tinyxml2::XMLNode *createNewPlotDiagramElementAndRequiredStructures(tinyxml2::XM
  * @see showSeasonPlanStatus
  * 
  */
-int showSeasonStatus(std::string filename)
+int showSeasonStatus(std::string filename, bool updateStructure = false)
 {
     int nStatus = 0;
 
@@ -1176,9 +1172,13 @@ int showSeasonStatus(std::string filename)
         tinyxml2::XMLElement *xmlRoot = f_xmlDoc->RootElement();
         if (xmlRoot != nullptr)
         {
-            createNewPlotDiagramElementAndRequiredStructures(xmlRoot);
+            if (updateStructure)
+            {
+                createNewPlotDiagramElementAndRequiredStructures(xmlRoot);
+                std::cout << "DDD About to exit" << std::endl;
 
-            exit(0);
+                exit(0);
+            }
 
             // StoryDesign
             showStoryDesignStatus(xmlRoot);
@@ -1337,14 +1337,17 @@ int main(int argc, char *argv[])
     std::string pathAndFilenameXml = "series.xml";
     std::string fileType = "series";
 
+    bool updateStructure = false;
+
     // TODO V add --update-PlotDiagram
 
-    const char *const short_opts = "a:e:hs:";
+    const char *const short_opts = "a:e:hs:u";
     const option long_opts[] = {
-        {"seriesfile", required_argument, nullptr, 's'},
-        {"seasonfile", required_argument, nullptr, 'a'},
+        {"autoupdate", no_argument, nullptr, 'u'},
         {"episodefile", required_argument, nullptr, 'e'},
         {"help", no_argument, nullptr, 'h'},
+        {"seasonfile", required_argument, nullptr, 'a'},
+        {"seriesfile", required_argument, nullptr, 's'},
         {nullptr, no_argument, nullptr, 0}};
     // TODO support --status (current op method)
     // TODO support --update will save an updated version of the xml file being read
@@ -1359,10 +1362,6 @@ int main(int argc, char *argv[])
 
         switch (opt)
         {
-        case 's':
-            pathAndFilenameXml = optarg;
-            fileType = "series";
-            break;
         case 'a':
             pathAndFilenameXml = optarg;
             fileType = "season";
@@ -1370,6 +1369,13 @@ int main(int argc, char *argv[])
         case 'e':
             pathAndFilenameXml = optarg;
             fileType = "episode";
+            break;
+        case 's':
+            pathAndFilenameXml = optarg;
+            fileType = "series";
+            break;
+        case 'u':
+            updateStructure = true;
             break;
         }
     }
@@ -1403,14 +1409,11 @@ int main(int argc, char *argv[])
             if (fileType.compare("series") == 0)
             {
                 // TODO maybe also replace xmlRoot with fileNameXml for consistency.
-                createNewPlotDiagramElementAndRequiredStructures(xmlRoot);
                 showSeriesStatus(xmlRoot);
-                // TODO this should really be: createNewPlotDiagramElementAndRequiredStructures
-                generatePlotDiagram(xmlRoot); // TODO only do this when doing --update
             }
             else if (fileType.compare("season") == 0)
             {
-                showSeasonStatus(fileNameXml);
+                showSeasonStatus(fileNameXml, updateStructure);
             }
             else if (fileType.compare("episode") == 0)
             {

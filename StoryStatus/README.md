@@ -13,7 +13,6 @@
 5. loop through each episode, go through sections
 6. 
 
-
 ### Methods for updating the plotplan
 
 Methods:
@@ -26,3 +25,11 @@ Challenges:
 * What if sequence length has changed?
 * What if the Scene number has changed?
 * What if there is already text in new elements? Like the 'Purpose' or 'Seed'
+
+## Descriptions
+
+The whole story consists of:
+
+* One series.xml file
+  * multiple season.xml files
+    * multiple episode.xml files

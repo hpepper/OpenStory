@@ -1,4 +1,7 @@
+<?xml version="1.0" standalone="no"?>
+<!-- DOCTYPE Series SYSTEM "series.dtd" -->
 
+<SEASON_DESIGN>
 <!-- Character sheets: -->
 <Reference></Reference>
 
@@ -363,3 +366,4 @@ ordinary story, the 10-minute movie:
     </Sequence>
   </Act>
 </PlotDiagram>
+</SEASON_DESIGN>
