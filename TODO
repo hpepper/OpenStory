@@ -1,6 +1,7 @@
 Support generating the Plotplan, instead of getting status.
 Generate status for PlotPlan
 Support support generating plotplan, with existing plotplan data merged in.
+  Merge the old into the new, after the new has been created?
 
 Start QT project
 Also support cli
@@ -16,3 +17,4 @@ Read the planner
   are there at least 4 scenes(if this is a teatime) 
   is the max 6? (if teatime)
  
+	
