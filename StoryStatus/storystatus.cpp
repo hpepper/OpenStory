@@ -231,10 +231,10 @@ tinyxml2::XMLElement *generateScene(tinyxml2::XMLElement *xmlSession, int sessio
 
     int currentActNumber = getActNumberForSceneNumber(sceneNumber);
     tinyxml2::XMLElement *xmlScene = xmlSession->InsertNewChildElement("Scene");
-    xmlSession->SetAttribute("Id", sceneNumber);
-    xmlSession->SetAttribute("Name", "");
-    xmlSession->SetAttribute("Act", currentActNumber);
-    xmlSession->SetAttribute("Session", sessionNumber);
+    xmlScene->SetAttribute("Id", sceneNumber);
+    xmlScene->SetAttribute("Name", "");
+    xmlScene->SetAttribute("Act", currentActNumber);
+    xmlScene->SetAttribute("Session", sessionNumber);
     // Add entry for the scene purpose
     // Add entry for optional design note for scene if it is the Ricing, Prepare etc.
     std::string sceneSeedDescription = getSceneSeed(sceneNumber);
