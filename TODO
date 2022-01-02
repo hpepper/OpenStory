@@ -1,8 +1,11 @@
-Support support generating plotplan, with existing plotplan data merged in.
-  Merge the old into the new, after the new has been created?
 Get getSceneSeed() to work, I might need to get the data loaded.
 
 Generate status for PlotPlan
+
+Autogenerate the Session XML files, from the PlotDiagram etc. createNewPlotDiagramElementAndRequiredStructures
+ALSO with 2 players player1 is always primary
+
+Split into Class for Scene and Session
 
 Start QT project
 Also support cli
